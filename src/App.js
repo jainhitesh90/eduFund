@@ -19,7 +19,7 @@ class App extends Component {
             <a class="navbar-brand" href="" target="_blank">
               <img src={logo} width="30" height="30" alt="EduFund" />
             </a>
-            <Link to="/" className="navbar-brand">EduFund Survey App</Link>
+            <Link to="/" className="navbar-brand">EduFund Survey App!!!!!!</Link>
           </nav>
           <br/>
           <Route path="/" exact component={Signup} />
