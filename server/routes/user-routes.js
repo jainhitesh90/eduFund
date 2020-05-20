@@ -13,6 +13,17 @@ userRoutes.route('/').get(function(req, res) {
     });
 });
 
+userRoutes.route('/add').post(function(req, res) {
+    let user = new User(req.body);
+    user.save()
+        .then(user => {
+            res.status(200).json({'user': 'user added successfully'});
+        })
+        .catch(err => {
+            res.status(400).send('adding new user failed');
+        });
+});
+
 userRoutes.route('/:id').get(function(req, res) {
     let id = req.params.id;
     User.findById(id, function(err, user) {
@@ -37,15 +48,5 @@ userRoutes.route('/update/:id').post(function(req, res) {
     });
 });
 
-userRoutes.route('/add').post(function(req, res) {
-    let user = new User(req.body);
-    user.save()
-        .then(user => {
-            res.status(200).json({'user': 'user added successfully'});
-        })
-        .catch(err => {
-            res.status(400).send('adding new user failed');
-        });
-});
 
 module.exports = userRoutes;
