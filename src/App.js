@@ -16,7 +16,7 @@ class App extends Component {
       <Router>
         <div className="container">
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="" target="_blank">
+            <a className="navbar-brand" href="" target="_blank">
               <img src={logo} width="30" height="30" alt="EduFund" />
             </a>
             <Link to="/" className="navbar-brand">EduFund Survey App!!!!!!</Link>
