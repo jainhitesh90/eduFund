@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core';
+import { styled } from '@material-ui/core/styles';
+import CustomError from './custom-error';
+
+const MyInput = styled(TextField)({
+  border: 0,
+  borderRadius: 4,
+  height: 48,
+  marginTop: '20px'
+});
 
 export default class CustomInput extends Component {
   constructor(props) {
@@ -8,14 +17,17 @@ export default class CustomInput extends Component {
   }
 
   render() {
-    const { id, label, type } = this.props;
+    const { id, label, type, errorMessage } = this.props;
     return (
-      <TextField
-        inputRef={this.reference}
-        id={id}
-        label={label}
-        type={type || 'text'}
-        variant="outlined" />
+      <div>
+        <MyInput
+          inputRef={this.reference}
+          id={id}
+          label={label}
+          type={type || 'text'}
+          variant="outlined" />
+        <CustomError errorMessage={errorMessage} />
+      </div>
     );
   }
 }
