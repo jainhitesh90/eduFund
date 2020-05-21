@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { TextField, Button, FormControlLabel, RadioGroup, Radio, FormLabel, Select, MenuItem } from '@material-ui/core';
+import CustomInput from './../custom-components/custom-input';
+import CustomButton from './../custom-components/custom-button';
+import CustomRadioGroup from './../custom-components/custom-radio-group';
+import CustomDropDown from '../custom-components/custom-dropdown';
+
+const gender = [
+    {key: 'male', value: 'Male'}, 
+    {key: 'female', value: 'Female'},
+    {key: 'other', value: 'Other'}
+];
+
+const ageGroup = [
+    {key: 'less-than-16', value: '< 16'}, 
+    {key: '16-to-25', value: '16 to 25'},
+    {key: '25-to-35', value: '25 to 35'},
+    {key: 'above-35', value: '> 35'}
+];
 
 export default class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
         }
         this.handleAgeChange = this.handleAgeChange.bind(this);
         this.handleGenderChange = this.handleGenderChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.userName = React.createRef();
-        this.userEmail = React.createRef();
-        this.userPassword = React.createRef();
     }
 
     render() {
@@ -24,66 +36,82 @@ export default class Signup extends Component {
 
     renderLoginForm() {
         return (
-            <form onSubmit={this.handleSubmit} style={{ display: 'flex', flexDirection: 'column' }} noValidate autoComplete="off">
-                <TextField inputRef={(ref) => {this.userName = ref}} id="outlined-basic" label="Name" variant="outlined" />
-                <TextField inputRef={(ref) => {this.userEmail = ref}} id="outlined-basic" label="Email Id" type="email" variant="outlined" />
-                <FormLabel id="demo-simple-select-label">Age</FormLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    onChange={this.handleAgeChange}>
-                    <MenuItem value={10}>10</MenuItem>
-                    <MenuItem value={20}>20</MenuItem>
-                    <MenuItem value={30}>30</MenuItem>
-                </Select>
-                <FormLabel component="legend">Gender</FormLabel>
-                <RadioGroup aria-label="gender" name="gender1" onChange={this.handleGenderChange}>
-                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                    <FormControlLabel value="male" control={<Radio />} label="Male" />
-                    <FormControlLabel value="other" control={<Radio />} label="Other" />
-                </RadioGroup>
-                <TextField inputRef={(ref) => {this.userPassword = ref}} id="outlined-basic" label="Password" variant="outlined" type="password" />
-                <Button onClick={this.handleSubmit} variant="contained" color="primary">Sign Up</Button>
+            <form style={{ display: 'flex', flexDirection: 'column' }} noValidate autoComplete="off">
+                <CustomInput
+                    label={"Name"}
+                    id={"userName"}
+                    ref={"userName"}
+                />
+                <CustomInput
+                    label={"Email Id"}
+                    id={"userEmail"}
+                    ref={"userEmail"}
+                />
+                <CustomDropDown
+                    label={"Age Group"}
+                    id={"ageGroup"}
+                    onChange={this.handleAgeChange}
+                    values={ageGroup}
+                />
+                <CustomRadioGroup
+                    label={"Gender"}
+                    id={"gender"}
+                    onChange={this.handleGenderChange}
+                    values={gender}
+                />
+                <CustomInput
+                    label={"New Password"}
+                    id={"newPassowrd"}
+                    ref={"newPassowrd"}
+                    type={"password"}
+                />
+                <CustomInput
+                    label={"Confirm Password"}
+                    id={"confirmPassowrd"}
+                    ref={"confirmPassowrd"}
+                    type={"password"}
+                />
+                <CustomButton
+                    label={"Sign Up"}
+                    id={"signup"}
+                    onClick={this.handleSubmit}
+                    color={"primary"}
+                />
             </form>
         );
     }
 
     handleGenderChange(e) {
-        console.log("valie", e.target.value)
         this.setState({
             gender: e.target.value
-        }, () => { console.log('state', this.state) });
+        });
     }
 
     handleAgeChange(e) {
-        console.log("valie", e.target.value)
         this.setState({
             age: e.target.value
-        }, () => { console.log('state', this.state) });
+        });
     }
 
     handleSubmit(e) {
-        e.preventDefault();
-        console.log(this.userName.value);
-        console.log(this.userEmail.value);
-        console.log(this.userPassword.value);
         const userObj = {
-            user_name: this.userName.value,
-            user_email: this.userEmail.value,
-            userPassword: this.userPassword.value,
+            user_name: this.refs.userName['reference'].current.value,
+            user_email: this.refs.userEmail['reference'].current.value,
+            userPassword: this.refs.newPassowrd['reference'].current.value,
             user_age: this.state.age,
             gender: this.state.gender
         };
         if (this.validate(userObj)) {
             this.signupNewUser(userObj);
         }
-      }
+    }
 
     validate() {
         return true;
     }
 
     signupNewUser(userObj) {
+        console.log('obj', userObj);
         axios.post('http://localhost:8080/user/add', userObj)
             .then(res => console.log(res.data));
     }
