@@ -13,7 +13,7 @@ userRoutes.route('/').get(function(req, res) {
     });
 });
 
-userRoutes.route('/add').post(function(req, res) {
+userRoutes.route('/signup').post(function(req, res) {
     let user = new User(req.body);
     user.save()
         .then(user => {
@@ -22,6 +22,13 @@ userRoutes.route('/add').post(function(req, res) {
         .catch(err => {
             res.status(400).send('adding new user failed');
         });
+});
+
+userRoutes.route('/login').post(function(req, res) {
+    let id = req.params.email;
+    User.findById(id, function(err, user) {
+        res.json(user);
+    });
 });
 
 userRoutes.route('/:id').get(function(req, res) {
