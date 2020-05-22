@@ -8,18 +8,19 @@ let User = new Schema({
     email: {
         type: String
     },
-    password: {
+    gender: {
         type: String
     },
     ageGroup: {
         type: String
     },
-    gender: {
+    role: {
         type: String
     },
-    userType: {
+    token: {
         type: String
-    },
+    }
+    
 });
 
 module.exports = mongoose.model('User', User);

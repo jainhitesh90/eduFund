@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { TextField } from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
 import CustomError from './custom-error';
+import { InputGroup, InputGroupAddon, InputGroupText, Input, Label } from 'reactstrap';
 
-const MyInput = styled(TextField)({
+const inputStyle = {
   border: 0,
   borderRadius: 4,
-  height: 48,
-  marginTop: '20px'
-});
+  height: 48
+};
 
 export default class CustomInput extends Component {
   constructor(props) {
@@ -17,15 +15,20 @@ export default class CustomInput extends Component {
   }
 
   render() {
-    const { id, label, type, errorMessage } = this.props;
+    const { id, label, type, errorMessage, placeholder } = this.props;
     return (
-      <div>
-        <MyInput
-          inputRef={this.reference}
-          id={id}
-          label={label}
-          type={type || 'text'}
-          variant="outlined" />
+      <div style={{ marginTop: '10px' }}>
+        <Label>{label}</Label>
+        <InputGroup style={inputStyle}>
+          {/* <InputGroupAddon addonType="prepend">
+          <InputGroupText>@</InputGroupText>
+        </InputGroupAddon> */}
+          <Input
+            innerRef={this.reference}
+            id={id}
+            type={type || 'text'}
+            placeholder={placeholder} />
+        </InputGroup>
         <CustomError errorMessage={errorMessage} />
       </div>
     );

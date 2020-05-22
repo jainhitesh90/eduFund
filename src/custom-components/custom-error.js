@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
-import { FormLabel} from '@material-ui/core';
-import { styled } from '@material-ui/core/styles';
+import { Label} from 'reactstrap';
 import {isEmpty} from 'lodash';
-
-const MyLabel = styled(FormLabel)({
-  marginTop: '20px',
-  marginBottom: '20px',
-  color: 'red'
-});
 
 export default class CustomError extends Component {
   render() {
@@ -17,7 +10,7 @@ export default class CustomError extends Component {
     } else {
       return (
         <div>
-          <MyLabel>{errorMessage}</MyLabel>
+          <Label style={{color: 'red'}}>{errorMessage}</Label>
         </div>
       );
     }
