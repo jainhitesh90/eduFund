@@ -7,85 +7,84 @@ import CustomDropDown from '../custom-components/custom-dropdown';
 import CustomError from '../custom-components/custom-error';
 import { Row, Col } from 'reactstrap';
 import Utility from './../utilities/utility';
-import { isEmpty } from 'lodash';
 import Constant from './../utilities/constant';
+import { isNil } from 'lodash';
 
 export default class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nameError: '',
-      emailError: '',
-      newPasswordError: '',
-      confirmPasswordError: '',
-      ageGroupError: '',
-      genderError: '',
-      userTypeError: '',
-      errorMessage: ''
+      data: {},
+      errorObject: {}
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
+    //TODO need to check this way of routing again.
+    if (this.state.redirectToHome === true) {
+      return <Redirect to='/home' />
+    }
     return (
       this.renderSignupForm()
     )
   }
 
   renderSignupForm() {
+    const {errorObject, errorMessage} = this.state;
     return (
       <div style={{ padding: '16px', background: 'lightgrey' }}>
         <Row>
           <Col xs={6} className={'offset-3'}>
-            <CustomError errorMessage={this.state.errorMessage} />
+            {/* <CustomGlobalError showError={showError} errorMessage={errorMessage} /> */}
             <form style={{ display: 'flex', flexDirection: 'column' }} noValidate autoComplete="off">
               <CustomInput
                 label={"Name"}
-                id={"userName"}
-                ref={"userName"}
-                errorMessage={this.state.nameError}
+                id={"name"}
+                ref={"name"}
+                errorMessage={errorObject.nameError}
               />
               <CustomInput
                 label={"Email Id"}
-                id={"userEmail"}
-                ref={"userEmail"}
-                errorMessage={this.state.emailError}
+                id={"email"}
+                ref={"email"}
+                errorMessage={errorObject.emailError}
               />
               <CustomRadioGroup
                 label={"Gender"}
                 id={"gender"}
                 onChange={this.handleChange}
                 values={Constant.gender}
-                errorMessage={this.state.genderError}
+                errorMessage={errorObject.genderError}
               />
               <CustomDropDown
                 label={"Age Group"}
                 id={"ageGroup"}
                 onChange={this.handleChange}
                 values={Constant.ageGroup}
-                errorMessage={this.state.ageGroupError}
+                errorMessage={errorObject.ageGroupError}
               />
               <CustomRadioGroup
                 label={"Role"}
                 id={"role"}
                 onChange={this.handleChange}
                 values={Constant.roles}
-                errorMessage={this.state.userTypeError}
+                errorMessage={errorObject.roleError}
               />
               <CustomInput
-                label={"New Password"}
-                id={"newPassword"}
-                ref={"newPassword"}
+                label={"Password"}
+                id={"password"}
+                ref={"password"}
                 type={"password"}
-                errorMessage={this.state.newPasswordError}
+                errorMessage={errorObject.passwordError}
               />
               <CustomInput
                 label={"Confirm Password"}
                 id={"confirmPassword"}
                 ref={"confirmPassword"}
                 type={"password"}
-                errorMessage={this.state.confirmPasswordError}
+                errorMessage={errorObject.confirmPasswordError}
               />
               <CustomButton
                 label={"Sign Up"}
@@ -93,6 +92,7 @@ export default class Signup extends Component {
                 onClick={this.handleSubmit}
                 color={"primary"}
               />
+              <CustomError errorMessage={errorMessage} />
             </form>
           </Col>
         </Row>
@@ -102,83 +102,68 @@ export default class Signup extends Component {
 
   handleChange(key, value) {
     const state = this.state;
-    state[key] = value;
+    state.data[key] = value;
     this.setState(state);
   }
 
-  handleSubmit(e) {
-    const userObj = {
-      name: this.refs.userName['reference'].current.value,
-      email: this.refs.userEmail['reference'].current.value,
-      password: this.refs.newPassword['reference'].current.value,
-      confirmPassword: this.refs.confirmPassword['reference'].current.value,
-      ageGroup: this.state.ageGroup,
-      role: this.state.role,
-      gender: this.state.gender
-    };
-    if (this.validate(userObj)) {
-      this.signupNewUser(userObj);
-    }
-  }
-
-  validate(userObj) {
+  handleSubmit() {
     const state = this.state;
-    if (isEmpty(userObj.name)) {
-      state['nameError'] = 'Name cannot be empty';
-    } else {
-      state['nameError'] = '';
-    }
-
-    if (isEmpty(userObj.email)) {
-      state['emailError'] = 'Email cannot be empty';
-    } else {
-      state['emailError'] = '';
-    }
-
-    if (isEmpty(userObj.password)) {
-      state['newPasswordError'] = 'Password cannot be empty';
-    } else {
-      state['newPasswordError'] = '';
-    }
-
-    if (isEmpty(userObj.confirmPassword)) {
-      state['confirmPasswordError'] = 'Confirm Password cannot be empty';
-    } else {
-      state['confirmPasswordError'] = '';
-    }
-
-    if (isEmpty(userObj.ageGroup)) {
-      state['ageGroupError'] = 'Please select Age group';
-    } else {
-      state['ageGroupError'] = '';
-    }
-
-    if (isEmpty(userObj.role)) {
-      state['userTypeError'] = 'Please select User Type';
-    } else {
-      state['userTypeError'] = '';
-    }
-
-    if (isEmpty(userObj.gender)) {
-      state['genderError'] = 'Please select Gender';
-    } else {
-      state['genderError'] = '';
-    }
-
-    if (Utility.validateNewAndConfirmPassword(userObj.password, userObj.confirmPassword)) {
-      state['errorMessage'] = 'New Password is not same as Confirm Password!'
-    }
-
-    this.setState({
-      state: state
-    })
-
-    return true;
+    state.data.name = this.refs.name['reference'].current.value;
+    state.data.email = this.refs.email['reference'].current.value;
+    state.data.password = this.refs.password['reference'].current.value;
+    state.data.confirmPassword = this.refs.confirmPassword['reference'].current.value;
+    state.data.ageGroup = state.data.ageGroup;
+    state.data.role = state.data.role;
+    state.data.gender = state.data.gender;
+    state.errorMessage = null; //refresh this on every check
+    this.setState(state, this.validateData);
   }
 
-  signupNewUser(userObj) {
-    console.log('obj', userObj);
-    // axios.post('http://localhost:8080/user/signup', userObj)
-    //   .then(res => console.log(res.data));
+  validateData() {
+    const state = this.state;
+    for (let [key, value] of Object.entries(state.data)) {
+      state.errorObject[key + "Error"] = Utility.validateInputFields(key, value);
+    }
+    this.setState(state, this.proceed);
+  }
+
+  proceed() {
+    const state = this.state;
+    const errorObject = state.errorObject;
+    let formError = false;
+    for (let [key, value] of Object.entries(errorObject)) {
+      errorObject[key] = value;
+      if (!isNil(errorObject[key])) {
+        formError = true;
+        break;
+      }
+    }
+    if (!formError) {
+      state.errorMessage = Utility.validateNewAndConfirmPassword(state.data.password, state.data.confirmPassword);
+      this.setState(state, this.signUpUser);
+    }
+  }
+
+  signUpUser() {
+    console.log('state', this.state);
+    if (isNil(this.state.errorMessage)) {
+      axios.post('http://localhost:8080/user/signup', this.state.data).then(res => this.processResult(res.data));
+    }
+  }
+
+  processResult(res) {
+    console.log('res', res);
+    if (!isNil(res.error)) {
+      this.setState({
+        errorMessage: res.error
+      })
+    } else {
+      console.log('successfully signup', res.user);
+      this.setState({
+        user: res.user,
+        errorMessage: null,
+        redirectToHome: true
+      })
+    }
   }
 }
