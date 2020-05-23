@@ -26,7 +26,7 @@ export default class Signup extends Component {
   render() {
     //TODO need to check this way of routing again.
     if (this.state.redirectToHome === true) {
-      return <Redirect to='/home' />
+      return <Redirect to='/my-surveys' />
     }
     return (
       this.renderSignupForm()
@@ -147,9 +147,9 @@ export default class Signup extends Component {
     console.log('state', this.state);
     if (isNil(this.state.errorMessage)) {
       const res = await ApiHelper.postData('/user/signup', this.state.data);
-      if (!isNil(res.error)) {
+      if (!isNil(res.data.error)) {
         this.setState({
-          errorMessage: res.error
+          errorMessage: res.data.error
         })
       } else {
         console.log('successfully signup', res.data.user);

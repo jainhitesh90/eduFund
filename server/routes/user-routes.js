@@ -44,7 +44,7 @@ userRoutes.route('/login').post(function (req, res) {
                     payload.token = Utility.getToken(user.email);
                     res.status(200).send({ user: payload });
                 } else {
-                    res.status(401).send({ error: 'Incorrect password' });
+                    res.status(200).send({ error: 'Incorrect password' });
                 }
             }).catch(err => {
                 res.status(500).send({ error: err });

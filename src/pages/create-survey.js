@@ -96,11 +96,12 @@ export default class CreateSurvey extends Component {
 
     renderTargetGroupSection() {
         const { targetModalData } = this.state;
+        const label = !isNil(targetModalData.ageGroup) || !isNil(targetModalData.gender) ? 'Update Target Group' : 'Select Target Group';
         return <div>
             {!isNil(targetModalData.ageGroup) ? <p>Target Age Group : {targetModalData.ageGroup}</p> : null}
             {!isNil(targetModalData.gender) ? <p>Target Gender : {targetModalData.gender}</p> : null}
             <CustomButton
-                label={"Select Target group"}
+                label={label}
                 id={"selectTargetGroup"}
                 onClick={() => this.setState({ showTargetModal: !this.state.showTargetModal })}
                 color={"primary"}
@@ -145,7 +146,7 @@ export default class CreateSurvey extends Component {
     createSurvey = async () => {
         console.log('state', this.state);
         let payload = {};
-        payload.name = this.refs.titleError['reference'].current.value;
+        payload.title = this.refs.title['reference'].current.value;
         payload.questions = this.state.questions;
         payload.targetGroup = this.state.targetModalData;
         if (isNil(this.state.errorMessage)) {

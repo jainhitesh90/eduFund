@@ -96,24 +96,16 @@ export default class Login extends Component {
     }
   }
 
-  loginUser() {
-    console.log('state', this.state);
-    if (isNil(this.state.errorMessage)) {
-      ApiHelper.get('/user/login', this.state.data)
-    }
-  }
-
   loginUser = async () => {
-    console.log('state', this.state);
     if (isNil(this.state.errorMessage)) {
       const res = await ApiHelper.postData('/user/login', this.state.data);
-      if (!isNil(res.error)) {
-        console.log('failed login', res.error);
+      if (!isNil(res.data.error)) {
+        console.log('failure', res);
         this.setState({
-          errorMessage: res.error
+          errorMessage: res.data.error
         })
       } else {
-        console.log('successfully login', res.data.user);
+        console.log('success', res);
         localStorage.setItem('token', 'Bearer ' + res.data.user.token)
         this.setState({
           user: res.user,

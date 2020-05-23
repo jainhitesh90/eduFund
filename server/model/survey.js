@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let Survey = new Schema({
+let surveySchema = new Schema({
     publisherId : String,
     isPublished: Boolean,
     title: String,
@@ -17,4 +17,4 @@ let Survey = new Schema({
     }
 });
 
-module.exports = mongoose.model('Survey', Survey);
+module.exports = mongoose.model('Survey', surveySchema);

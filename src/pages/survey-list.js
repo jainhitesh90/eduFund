@@ -3,6 +3,7 @@ import { isNil } from 'lodash';
 import { Redirect } from 'react-router';
 import CustomButton from '../custom-components/custom-button';
 import ApiHelper from '../utilities/api-helper';
+import { Row, Col } from 'reactstrap';
 
 export default class SurveyList extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ export default class SurveyList extends Component {
 
     getSurveyList = async () => {
         const res = await ApiHelper.getData('/survey/getAllSurveys');
+        console.log('ressss', res);
         if (!isNil(res.data.surveys)) {
             this.setState({
                 surveys: res.data.surveys,
@@ -63,8 +65,41 @@ export default class SurveyList extends Component {
     }
 
     renderSurveyList() {
+        const self = this;
         return this.state.surveys.map(function (item, index) {
-            return <p key={'survey-' + index}>{item.name}</p>
+            console.log('item', item);
+            return <Row key={'survey-' + index}>
+                <Col xs={4}>
+                    <p>{item.title}</p>
+                </Col>
+                <Col xs={4}>
+                    {item.isPublished ? <p style={{color: 'blue'}}>Already Published</p> : <CustomButton
+                        label={"Publish Survey"}
+                        id={"publishSurvey"}
+                        onClick={() => self.publishSurvey(item._id)}
+                        color={"primary"}
+                    />}
+                </Col>
+            </Row>
         })
+    }
+
+    publishSurvey = async (id) => {
+        console.log('Publishing survey with id', id);
+        const res = await ApiHelper.postData('/survey/update/' + id, {isPublished: true});
+        console.log('ressss', res);
+        this.getSurveyList();
+        alert('Survey updated successfully')
+        // if (!isNil(res.data.surveys)) {
+        //     this.setState({
+        //         surveys: res.data.surveys,
+        //         error: null
+        //     })
+        // } else {
+        //     this.setState({
+        //         surveys: [],
+        //         error: res.data.error
+        //     })
+        // }
     }
 }

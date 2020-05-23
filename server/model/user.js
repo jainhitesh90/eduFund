@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 // const environment = process.env.NODE_ENV;
-// const bcryptSaltingRound = process.env.BCRYPT_SALTING_ROUND;
-const environment = process.env.NODE_ENV;
+const environment = 'development'; //TODO remove hardcoded and check why dotEnv is not working
 const stage = require('../config')[environment];
 
 let userSchema = new Schema({

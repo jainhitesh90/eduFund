@@ -32,7 +32,9 @@ surveyRoutes.route('/add').post(function (req, res) {
 });
 
 surveyRoutes.route('/getAllSurveys').get(function (req, res) {
+    console.log('headers', req.headers);
     const token = Utility.validateToken(req.headers);
+    console.log('token', token);
     if (token === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
@@ -59,6 +61,31 @@ surveyRoutes.route('/:id').get(function (req, res) {
                 res.status(200).send({ survey: survey });
             }
         });
+    }
+});
+
+surveyRoutes.route('/update/:id').post(function (req, res) {
+    let id = req.params.id;
+    let body = req.body;
+    console.log('data', id, body);
+    const token = Utility.validateToken(req.headers);
+    if (token === null) {
+        res.status(200).send({ error: 'Invalid token' });
+    } else {
+        Survey.findById(req.params.id)
+            .then((survey) => {
+                Object.keys(body).forEach(function (key) {
+                    survey[key] = body[key];
+                });
+                survey.save()
+                    .then(survey => {
+                        res.status(200).json({ data: 'survey updated successfully' });
+                    })
+                    .catch(err => {
+                        res.status(500).send({ error: err });
+                    });
+            })
+            .catch((err) => res.status(200).json({ data: 'survey updated failed' }))
     }
 });
 
