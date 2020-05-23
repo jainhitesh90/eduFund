@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 let Survey = new Schema({
     publisherId : String,
     isPublished: Boolean,
+    name: String,
     question: [
         {
             question: String,
-            optionType: String,
             options: Array
         }
     ]

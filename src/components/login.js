@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import CustomInput from './../custom-components/custom-input';
 import CustomError from '../custom-components/custom-error';
 import CustomButton from './../custom-components/custom-button';
@@ -7,6 +6,7 @@ import { Row, Col } from 'reactstrap';
 import Utility from './../utilities/utility';
 import { isNil } from 'lodash';
 import { Redirect } from 'react-router';
+import ApiHelper from '../utilities/api-helper';
 
 export default class Login extends Component {
   constructor(props) {
@@ -16,12 +16,13 @@ export default class Login extends Component {
       errorObject: {}
     }
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.loginUser = this.loginUser.bind(this);
   }
 
   render() {
     //TODO need to check this way of routing again.
     if (this.state.redirectToHome === true) {
-      return <Redirect to='/home' />
+      return <Redirect to='/my-surveys' />
     }
     return (
       this.renderLoginForm()
@@ -29,7 +30,7 @@ export default class Login extends Component {
   }
 
   renderLoginForm() {
-    const {errorObject, errorMessage} = this.state;
+    const { errorObject, errorMessage } = this.state;
     return (
       <div style={{ padding: '16px', background: 'lightgrey' }}>
         <Row>
@@ -98,24 +99,28 @@ export default class Login extends Component {
   loginUser() {
     console.log('state', this.state);
     if (isNil(this.state.errorMessage)) {
-      axios.post('http://localhost:8080/user/login', this.state.data).then(res => this.processResult(res.data));
+      ApiHelper.get('/user/login', this.state.data)
     }
   }
 
-  processResult(res) {
-    console.log('res', res);
-    if (!isNil(res.error)) {
-      console.log('failed login', res.error);
-      this.setState({
-        errorMessage: res.error
-      })
-    } else {
-      console.log('successfully login', res.user);
-      this.setState({
-        user: res.user,
-        errorMessage: null,
-        redirectToHome: true
-      })
+  loginUser = async () => {
+    console.log('state', this.state);
+    if (isNil(this.state.errorMessage)) {
+      const res = await await ApiHelper.postData('/user/login', this.state.data);
+      if (!isNil(res.error)) {
+        console.log('failed login', res.error);
+        this.setState({
+          errorMessage: res.error
+        })
+      } else {
+        console.log('successfully login', res.data.user);
+        localStorage.setItem('token', 'Bearer ' + res.data.user.token)
+        this.setState({
+          user: res.user,
+          errorMessage: null,
+          redirectToHome: true
+        })
+      }
     }
   }
 }

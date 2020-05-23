@@ -3,7 +3,7 @@ const userRoutes = express.Router();
 const bcrypt = require('bcrypt');
 
 let User = require('../model/user');
-let Utility = require('../utility/utilities');
+let Utility = require('../utilities/utility');
 
 userRoutes.route('/signup').post(function (req, res) {
     User.find({ email: req.body.email }, function (err, result) {
@@ -13,7 +13,7 @@ userRoutes.route('/signup').post(function (req, res) {
                 let token = Utility.getToken(user.email);
                 user.save((err, user) => {
                     if (!err) {
-                        res.status(201).send({ data: { token: token } });
+                        res.status(201).send({ user: { token: token } });
                     } else {
                         res.status(500).send({ error: err });
                     }
@@ -42,7 +42,7 @@ userRoutes.route('/login').post(function (req, res) {
                     var payload = user.toObject();
                     delete payload.password;
                     payload.token = Utility.getToken(user.email);
-                    res.status(200).send({ data: payload });
+                    res.status(200).send({ user: payload });
                 } else {
                     res.status(401).send({ error: 'Incorrect password' });
                 }

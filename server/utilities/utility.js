@@ -12,15 +12,16 @@ class Utility {
 
     static validateToken = (headers) => {
         const authorizationHeaader = headers.authorization;
+        console.log('headers', headers);
         if (authorizationHeaader) {
             const token = headers.authorization.split(' ')[1]; // Remove keyword Bearer <token>
             try {
                 return jwt.verify(token, this.secret, this.options); // verify makes sure that the token hasn't expired and has been issued by us
             } catch (err) {
-                return {error: err};
+                return null;
             }
         } else {
-            return {error: 'Token not passed in header'};
+            return null;
         }
     }
 }

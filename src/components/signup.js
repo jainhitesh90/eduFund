@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import CustomInput from './../custom-components/custom-input';
 import CustomButton from './../custom-components/custom-button';
 import CustomRadioGroup from './../custom-components/custom-radio-group';
@@ -10,6 +9,7 @@ import Utility from './../utilities/utility';
 import Constant from './../utilities/constant';
 import { isNil } from 'lodash';
 import { Redirect } from 'react-router';
+import ApiHelper from '../utilities/api-helper';
 
 export default class Signup extends Component {
   constructor(props) {
@@ -20,6 +20,7 @@ export default class Signup extends Component {
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.signUpUser = this.signUpUser.bind(this);
   }
 
   render() {
@@ -145,26 +146,23 @@ export default class Signup extends Component {
     }
   }
 
-  signUpUser() {
+  signUpUser = async () => {
     console.log('state', this.state);
     if (isNil(this.state.errorMessage)) {
-      axios.post('http://localhost:8080/user/signup', this.state.data).then(res => this.processResult(res.data));
-    }
-  }
-
-  processResult(res) {
-    console.log('res', res);
-    if (!isNil(res.error)) {
-      this.setState({
-        errorMessage: res.error
-      })
-    } else {
-      console.log('successfully signup', res.user);
-      this.setState({
-        user: res.user,
-        errorMessage: null,
-        redirectToHome: true
-      })
+      const res = await await ApiHelper.postData('/user/signup', this.state.data);
+      if (!isNil(res.error)) {
+        this.setState({
+          errorMessage: res.error
+        })
+      } else {
+        console.log('successfully signup', res.data.user);
+        localStorage.setItem('token', 'Bearer ' + res.data.user.token)
+        this.setState({
+          user: res.user,
+          errorMessage: null,
+          redirectToHome: true
+        })
+      }
     }
   }
 }
