@@ -4,13 +4,17 @@ const Schema = mongoose.Schema;
 let Survey = new Schema({
     publisherId : String,
     isPublished: Boolean,
-    name: String,
-    question: [
+    title: String,
+    questions : [
         {
             question: String,
             options: Array
         }
-    ]
+    ],
+    targetGroup: {
+        ageGroup: String,
+        gender: String
+    }
 });
 
 module.exports = mongoose.model('Survey', Survey);

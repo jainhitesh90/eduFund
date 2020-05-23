@@ -5,7 +5,9 @@ export default class CustomButton extends Component {
   render() {
     const { id, label, onClick, color } = this.props;
     return (
-      <Button onClick={onClick}
+      <Button
+        style={{ marginTop: '10px' }}
+        onClick={onClick}
         id={id}
         color={color}
       >{label}

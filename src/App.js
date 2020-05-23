@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./logo.svg";
-import Login from "./components/login.js";
-import Signup from "./components/signup.js";
-import HomePage from "./components/home-page.js";
-import CreateSurvey from "./components/create-survey.js";
-import EditSurvey from "./components/edit-survey.js";
-import SurveyList from "./components/survey-list.js";
+import Login from "./pages/login.js";
+import Signup from "./pages/signup.js";
+import HomePage from "./pages/home-page.js";
+import CreateSurvey from "./pages/create-survey.js";
+import SurveyList from "./pages/survey-list.js";
 
 class App extends Component {
   render() {
@@ -25,8 +24,7 @@ class App extends Component {
           <Route path="/sign-up" exact component={Signup} />
           <Route path="/home" exact component={HomePage} />
           <Route path="/my-surveys" exact component={SurveyList} />
-          <Route path="/edit/:id" component={EditSurvey} />
-          <Route path="/create" component={CreateSurvey} />
+          <Route path="/create-survey" component={CreateSurvey} />
         </div>
       </Router>
     );

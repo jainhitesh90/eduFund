@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CustomError from './custom-error';
-import { InputGroup, InputGroupAddon, InputGroupText, Input, Label } from 'reactstrap';
+// import { InputGroup, InputGroupAddon, InputGroupText, Input, Label } from 'reactstrap';
+import { InputGroup, Input, Label } from 'reactstrap';
 
 const inputStyle = {
   border: 0,

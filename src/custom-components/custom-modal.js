@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
+import CustomButton from './custom-button';
 
 export default class CustomModal extends Component {
   render() {
-    const {onClick, showModal, className, onClick, okText } = this.props;
+    const { onClick, onCancel, showModal, className, actionButtonText, title, body } = this.props;
     return (
-      <Modal isOpen={showModal} toggle={toggle} className={className}>
-        <ModalHeader toggle={toggle}>{title}</ModalHeader>
+      <Modal isOpen={showModal} className={className}>
+        <ModalHeader>{title}</ModalHeader>
         <ModalBody>
           {body}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={onClick}>{okText}</Button>{' '}
-          {/* <Button color="secondary" onClick={toggle}>Cancel</Button> */}
+          <CustomButton
+            label={'Cancel'}
+            onClick={onCancel}
+            color={"secondary"}
+          />
+          <CustomButton
+            label={actionButtonText}
+            onClick={onClick}
+            color={"primary"}
+          />
         </ModalFooter>
       </Modal>
     );
