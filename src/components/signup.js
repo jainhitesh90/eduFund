@@ -9,6 +9,7 @@ import { Row, Col } from 'reactstrap';
 import Utility from './../utilities/utility';
 import Constant from './../utilities/constant';
 import { isNil } from 'lodash';
+import { Redirect } from 'react-router';
 
 export default class Signup extends Component {
   constructor(props) {

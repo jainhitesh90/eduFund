@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = 8080;
+require('dotenv').config();
 
 const userRouter = require('./routes/user-routes.js')
 const surveyRouter = require('./routes/survey-routes.js')

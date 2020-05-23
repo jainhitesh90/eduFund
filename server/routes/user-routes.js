@@ -1,66 +1,78 @@
 const express = require('express');
 const userRoutes = express.Router();
+const bcrypt = require('bcrypt');
 
 let User = require('../model/user');
 let Utility = require('../utility/utilities');
 
-userRoutes.route('/getAllUsers').get(function (req, res) {
-    User.find(function (err, users) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(users);
-        }
-    });
-});
-
 userRoutes.route('/signup').post(function (req, res) {
-    var emailQuery = { email: req.body.email };
-    User.find(emailQuery, function (err, result) {
-        if (err) {
-            res.status(450).send({ 'status': 500, error: err });
-        } else if (result.length === 0) {
-            let token = Utility.generateToken(req.body.email, req.body.password);
-            let user = new User(req.body);
-            user.token = token;
-            user.save()
-                .then(user => {
-                    res.status(200).json({ 'status': 200, 'user': user });
-                })
-                .catch(err => {
-                    res.status(400).send({ 'status': 400, error: 'Signup failed!' });
+    User.find({ email: req.body.email }, function (err, result) {
+        if (!err) {
+            if (result.length === 0) {
+                let user = new User(req.body)
+                let token = Utility.getToken(user.email);
+                user.save((err, user) => {
+                    if (!err) {
+                        res.status(201).send({ data: { token: token } });
+                    } else {
+                        res.status(500).send({ error: err });
+                    }
                 });
+            } else {
+                res.status(200).send({ error: 'Already signed up by this email id' });
+            }
         } else {
-            res.status(200).send({ 'status': 200, error: 'Already signed up by this email id' });
+            res.status(500).send({ error: err });
         }
     });
 });
 
 userRoutes.route('/login').post(function (req, res) {
-    // first find if email id exists and then validate token
-    var emailQuery = { email: req.body.email };
+    const { email, password } = req.body;
+    var emailQuery = { email: email };
     User.find(emailQuery, function (err, result) {
         if (err) {
-            res.status(450).send({ 'status': 500, error: err });
+            res.status(500).send({ error: err });
         } else if (result.length === 0) {
-            res.status(200).send({ 'status': 200, error: 'User does not exists with this email id'});
+            res.status(200).send({ error: 'User does not exists with this email id' });
         } else {
             let user = new User(result[0]);
-            if (user.token === Utility.fetchToken(req.body.email, req.body.password)) {
-                res.status(200).send({ 'status': 200, user: user });
-            } else {
-                res.status(200).send({ 'status': 200, error: 'Incorrect Password' });
-            }
+            bcrypt.compare(password, user.password).then(match => {
+                if (match) {
+                    var payload = user.toObject();
+                    delete payload.password;
+                    payload.token = Utility.getToken(user.email);
+                    res.status(200).send({ data: payload });
+                } else {
+                    res.status(401).send({ error: 'Incorrect password' });
+                }
+            }).catch(err => {
+                res.status(500).send({ error: err });
+            });
         }
     });
 });
 
-// userRoutes.route('/:id').get(function(req, res) {
-//     let id = req.params.id;
-//     User.findById(id, function(err, user) {
-//         res.json(user);
-//     });
-// });
+userRoutes.route('/getAllUsers').get(function (req, res) {
+    User.find(function (err, users) {
+        if (err) {
+            res.status(500).send({ error: err });
+        } else {
+            res.status(200).send({ users: users });
+        }
+    });
+});
+
+userRoutes.route('/:id').get(function (req, res) {
+    let id = req.params.id;
+    User.findById(id, function (err, user) {
+        if (err) {
+            res.status(500).send({ error: err });
+        } else {
+            res.status(200).send({ user: user });
+        }
+    });
+});
 
 // userRoutes.route('/update/:id').post(function(req, res) {
 //     User.findById(req.params.id, function(err, user) {
@@ -79,5 +91,8 @@ userRoutes.route('/login').post(function (req, res) {
 //     });
 // });
 
+// userRoutes.route('/deleteAllUsers').post(function (req, res) {
+//     User.deleteMany({}, res.json({data: 'removed all user'}))
+// });
 
 module.exports = userRoutes;

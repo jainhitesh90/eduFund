@@ -2,13 +2,40 @@ const express = require('express');
 const surveyRoutes = express.Router();
 
 let Survey = require('../model/survey');
+let User = require('../model/user');
+let Utility = require('../utility/utilities');
 
-surveyRoutes.route('/').get(function(req, res) {
-    Survey.find(function(err, surveys) {
+surveyRoutes.route('/add').post(function (req, res) {
+    const token = Utility.validateToken(req.headers);
+    if (token === null) {
+        res.status(400).send({ error: 'Invalid token' });
+    } else {
+        let survey = new Survey(req.body);
+        User.find({ email: token.email }, function (err, result) {
+            if (err) {
+                res.status(500).send({ error: err });
+            } else if (result.length === 0) {
+                res.status(500).send({ error: 'User not found' });
+            } else {
+                survey.publisherId = result[0]._id;
+                survey.save()
+                    .then(survey => {
+                        res.status(200).json({data: 'survey added successfully' });
+                    })
+                    .catch(err => {
+                        res.status(500).send({ error: err });
+                    });
+            }
+        });
+    }
+});
+
+surveyRoutes.route('/getAllSurvey').get(function (req, res) {
+    Survey.find(function (err, surveys) {
         if (err) {
-            console.log(err);
+            res.status(500).send({error : err});
         } else {
-            res.json(surveys);
+            res.status(200).send({surveys: surveys });
         }
     });
 });
@@ -16,35 +43,12 @@ surveyRoutes.route('/').get(function(req, res) {
 surveyRoutes.route('/:id').get(function(req, res) {
     let id = req.params.id;
     Survey.findById(id, function(err, survey) {
-        res.json(survey);
+        if (err) {
+            res.status(500).send({error : err});
+        } else {
+            res.status(200).send({survey: survey });
+        }
     });
-});
-
-surveyRoutes.route('/update/:id').post(function(req, res) {
-    Survey.findById(req.params.id, function(err, survey) {
-        if (!survey)
-            res.status(404).send("data is not found");
-        else
-            survey.surevy_name = req.body.surevy_name;
-                
-            survey.save().then(survey => {
-                res.json('Survey updated!');
-            })
-            .catch(err => {
-                res.status(400).send("Update not possible");
-            });
-    });
-});
-
-surveyRoutes.route('/add').post(function(req, res) {
-    let survey = new Survey(req.body);
-    survey.save()
-        .then(survey => {
-            res.status(200).json({'survey': 'survey added successfully'});
-        })
-        .catch(err => {
-            res.status(400).send('adding new survey failed');
-        });
 });
 
 module.exports = surveyRoutes;
