@@ -6,12 +6,17 @@ let User = require('../model/user');
 let Utility = require('../utilities/utility');
 
 userRoutes.route('/signup').post(function (req, res) {
-    User.find({ email: req.body.email }, function (err, result) {
+    const params = req.body;
+    User.find({ email: params.email }, function (err, result) {
         if (!err) {
             if (result.length === 0) {
-                let user = new User(req.body)
+                let user = new User(params)
                 let token = Utility.createToken(user.email);
                 user.token = token;
+                if (params.role !== 'respondant') {
+                    user.gender = null;
+                    user.ageGroup = null;
+                }
                 user.save((err, user) => {
                     if (!err) {
                         res.status(201).send({ user: { token: token } });

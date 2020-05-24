@@ -73,7 +73,7 @@ export default class SurveyList extends Component {
                     <p>{item.title}</p>
                 </Col>
                 <Col xs={4}>
-                    {item.isPublished ? <p style={{color: 'blue'}}>Already Published</p> : <CustomButton
+                    {item.isPublished ? <p style={{color: 'blue'}}>Published</p> : <CustomButton
                         label={"Publish Survey"}
                         id={"publishSurvey"}
                         onClick={() => self.publishSurvey(item._id)}

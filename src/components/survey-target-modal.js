@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import CustomRadioGroup from '../custom-components/custom-radio-group';
 import CustomModal from '../custom-components/custom-modal';
 import CustomDropDown from '../custom-components/custom-dropdown';
 import Constant from '../utilities/constant';
@@ -35,7 +34,7 @@ export default class SurveyTargetModal extends Component {
     renderTargetModalBody() {
         const { errorObject } = this.state;
         return <div>
-            <CustomRadioGroup
+            <CustomDropDown
                 label={"Target Gender"}
                 id={"gender"}
                 onChange={this.handleChange}

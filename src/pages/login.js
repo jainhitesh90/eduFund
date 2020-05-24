@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Card } from 'reactstrap';
 import { isNil } from 'lodash';
 import { Redirect } from 'react-router';
 import CustomInput from '../custom-components/custom-input';
@@ -32,15 +32,16 @@ export default class Login extends Component {
   renderLoginForm() {
     const { errorObject, errorMessage } = this.state;
     return (
-      <div style={{ padding: '16px', background: 'lightgrey' }}>
-        <Row>
-          <Col xs={6} className={'offset-3'}>
-            {/* <CustomGlobalError showError={showError} errorMessage={errorMessage} /> */}
+      <Row>
+        <Col xs={8} className={'offset-2'}>
+          <Card style={{ padding: '32px', background: 'lightgrey' }}>
             <form style={{ display: 'flex', flexDirection: 'column' }} noValidate autoComplete="off">
               <CustomInput
                 label={"Email Id"}
                 id={"email"}
                 ref={"email"}
+                mandatory={true}
+                prependAddon='fa-envelope'
                 errorMessage={errorObject.emailError}
               />
               <CustomInput
@@ -48,6 +49,8 @@ export default class Login extends Component {
                 id={"password"}
                 ref={"password"}
                 type={"password"}
+                mandatory={true}
+                prependAddon='fa-lock'
                 errorMessage={errorObject.passwordError}
               />
               <CustomButton
@@ -55,12 +58,13 @@ export default class Login extends Component {
                 id={"login"}
                 onClick={this.handleSubmit}
                 color={"primary"}
+                style={{margin: '24px auto auto', width: '144px' }}
               />
               <CustomError errorMessage={errorMessage} />
             </form>
-          </Col>
-        </Row>
-      </div>
+          </Card>
+        </Col>
+      </Row>
     );
   }
 
@@ -77,6 +81,7 @@ export default class Login extends Component {
     for (let [key, value] of Object.entries(state.data)) {
       state.errorObject[key + "Error"] = Utility.validateInputFields(key, value);
     }
+    state.errorObject['emailError'] = Utility.validateEmail(state.data.email); //validate email pattern
     this.setState(state, this.proceed);
   }
 

@@ -6,6 +6,14 @@ const validateNewAndConfirmPassword = (password, confirmPassword) => {
     }
 }
 
+const validateEmail = (inputEmail) => {
+    var atposition = inputEmail.indexOf("@");
+    var dotposition = inputEmail.lastIndexOf(".");
+    if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >= inputEmail.length) {
+        return "Please enter valid email id";
+    }
+}
+
 const validateInputFields = (key, value) => {
     if (isEmpty(value)) {
         return startCase(key) + " cannot be empty";
@@ -15,5 +23,5 @@ const validateInputFields = (key, value) => {
 }
 
 export default {
-    validateNewAndConfirmPassword, validateInputFields
+    validateNewAndConfirmPassword, validateInputFields, validateEmail
 };

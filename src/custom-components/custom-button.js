@@ -3,10 +3,10 @@ import { Button } from 'reactstrap';
 
 export default class CustomButton extends Component {
   render() {
-    const { id, label, onClick, color } = this.props;
+    const { id, label, onClick, color, style } = this.props;
     return (
       <Button
-        style={{ marginTop: '10px' }}
+        style={style}
         onClick={onClick}
         id={id}
         color={color}

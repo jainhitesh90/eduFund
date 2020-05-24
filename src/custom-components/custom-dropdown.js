@@ -4,10 +4,10 @@ import { FormGroup, Input, Label } from 'reactstrap';
 
 export default class CustomDropDown extends Component {
   render() {
-    const { id, label, onChange, values, errorMessage } = this.props;
+    const { id, label, onChange, values, errorMessage, mandatory } = this.props;
     return (
-      <FormGroup>
-        <Label>{label}</Label>
+      <div style={{ marginTop: '10px' }}>
+        <Label style={{margin: 0}}>{label} {mandatory ? <sup style={{color: 'red'}}>*</sup> : null}</Label>
         <Input type="select" name="select" id="exampleSelect" onChange={(e) => onChange(id, values[e.target.selectedIndex].key)}>
           {
             (values || []).map(function (item) {
@@ -16,7 +16,7 @@ export default class CustomDropDown extends Component {
           }
         </Input>
         <CustomError errorMessage={errorMessage} />
-      </FormGroup>
+     </div>
     );
   }
 }
