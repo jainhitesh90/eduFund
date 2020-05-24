@@ -51,7 +51,6 @@ surveyRoutes.route('/getCoOrindtorSurveys').get(function (req, res) {
     if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
-        console.log('email foundddd', jwtTokenObject.email);
         User.find({ email: jwtTokenObject.email }, function (err, result) {
             if (err) {
                 res.status(500).send({ error: err });
@@ -101,7 +100,7 @@ surveyRoutes.route('/getRespondantSurveys').get(function (req, res) {
                 Survey.find({
                     $and: [{
                         $or: [query1, query2, query3, query4, query5, query6, query7, query8, query9]
-                    }, 
+                    },
                     {
                         $or: [query10]
                     }
@@ -110,17 +109,22 @@ surveyRoutes.route('/getRespondantSurveys').get(function (req, res) {
                     if (err) {
                         res.status(500).send({ error: err });
                     } else {
-                        console.log('before', surveys);
-                        surveys.map(function(item) {
-                            if (user.surveysTaken.indexOf(item._id.toString()) !== -1) {
-                                item['surveyTaken'] = true;
-                            } else {
-                                item['surveyTaken'] = false;
+                        let tempSurveys = [];
+                        for (let i = 0; i < surveys.length; i++) {
+                            let item = surveys[i];
+                            for (let m = 0; m < user.surveysTaken.length; m++) {
+                                const userSurveyResponse = user.surveysTaken[m];
+                                if (userSurveyResponse.surveyId.toString() === item._id.toString()) {
+                                    let jsonObj = item.toJSON();
+                                    jsonObj['userSurveyResponse'] = userSurveyResponse.response;
+                                    tempSurveys.push(jsonObj);
+                                    break;
+                                } else {
+                                    tempSurveys.push(item.toJSON());
+                                }
                             }
-                        });
-                        console.log('after', surveys);
-                        // iterate user object and send which surveys are taken;
-                        res.status(200).send({ surveys: surveys });
+                        }
+                        res.status(200).send({ surveys: tempSurveys });
                     }
                 });
             }

@@ -17,7 +17,6 @@ export default class CustomInput extends Component {
     const { id, label, type, errorMessage, placeholder, mandatory, prependAddon } = this.props;
     let prependAddonClassName = null;
     if (prependAddon) {
-      console.log('prependAddon', prependAddon);
       prependAddonClassName = 'fa ' + prependAddon;
     }
     return (

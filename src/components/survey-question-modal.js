@@ -67,7 +67,7 @@ export default class SurveyQuestionModal extends Component {
                 const id = 'option' + (i + 1);
                 const opt = this.refs[id]['reference'].current.value;
                 if (!isNil(opt) && !isEmpty(opt)) {
-                    data.options.push(opt);
+                    data.options.push({key: 'option_' + i, value: opt});
                 }
             }
             this.props.updateQuestionsData(data);

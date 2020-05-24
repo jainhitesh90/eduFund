@@ -95,7 +95,7 @@ export default class CreateSurvey extends Component {
         return <Card style={{ padding: '8px' }}>
             <p>Q{questionNumber}) {item.question}</p>
             {item.options.map(function (option, optionIndex) {
-                return isNil(option) || isEmpty(option) ? null : <Label style={{ margin: 0 }}>{String.fromCharCode(97 + optionIndex)}) {option}</Label>
+                return isNil(option) || isEmpty(option) ? null : <Label style={{ margin: 0 }}>{String.fromCharCode(97 + optionIndex)}) {option.value}</Label>
             })}
         </Card>
     }
