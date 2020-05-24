@@ -20,7 +20,7 @@ export default class SurveyList extends Component {
     }
 
     getSurveyList = async () => {
-        const res = await ApiHelper.getData('/survey/getAllSurveys');
+        const res = await ApiHelper.getData('/survey/getMySurveys');
         console.log('ressss', res);
         if (!isNil(res.data.surveys)) {
             this.setState({
@@ -42,7 +42,7 @@ export default class SurveyList extends Component {
         return (
             <div style={{ background: 'lightgray', padding: '24px' }}>
                 {this.renderAddSurveyButton()}
-                <p style={{ color: 'blue', paddingTop: '24px' }}>Survey List here!!</p>
+                <p style={{ color: 'blue', paddingTop: '24px' }}>My Survey List here!!</p>
                 {!isNil(this.state.error) ? <p style={{ color: 'red' }}>Error : {this.state.error}</p> : null}
                 {this.renderSurveyList()}
             </div>

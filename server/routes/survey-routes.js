@@ -6,12 +6,12 @@ let User = require('../model/user');
 let Utility = require('../utilities/utility');
 
 surveyRoutes.route('/add').post(function (req, res) {
-    const token = Utility.validateToken(req.headers);
-    if (token === null) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
         let survey = new Survey(req.body);
-        User.find({ email: token.email }, function (err, result) {
+        User.find({ email: jwtTokenObject.email }, function (err, result) {
             if (err) {
                 res.status(500).send({ error: err });
             } else if (result.length === 0) {
@@ -21,7 +21,7 @@ surveyRoutes.route('/add').post(function (req, res) {
                 survey.isPublished = false;
                 survey.save()
                     .then(survey => {
-                        res.status(200).json({ data: 'survey added successfully' });
+                        res.status(200).json({ data: survey, message: 'Survey added successfully' });
                     })
                     .catch(err => {
                         res.status(500).send({ error: err });
@@ -32,10 +32,8 @@ surveyRoutes.route('/add').post(function (req, res) {
 });
 
 surveyRoutes.route('/getAllSurveys').get(function (req, res) {
-    console.log('headers', req.headers);
-    const token = Utility.validateToken(req.headers);
-    console.log('token', token);
-    if (token === null) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
         Survey.find(function (err, surveys) {
@@ -48,10 +46,35 @@ surveyRoutes.route('/getAllSurveys').get(function (req, res) {
     }
 });
 
+surveyRoutes.route('/getMySurveys').get(function (req, res) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
+        res.status(200).send({ error: 'Invalid token' });
+    } else {
+        console.log('email foundddd', jwtTokenObject.email);
+        User.find({ email: jwtTokenObject.email }, function (err, result) {
+            if (err) {
+                res.status(500).send({ error: err });
+            } else if (result.length === 0) {
+                res.status(200).send({ error: 'User does not exists with this email id' });
+            } else {
+                let user = new User(result[0]);
+                Survey.find({ publisherId: user._id }, function (err, surveys) {
+                    if (err) {
+                        res.status(500).send({ error: err });
+                    } else {
+                        res.status(200).send({ surveys: surveys });
+                    }
+                });
+            }
+        });
+    }
+});
+
 surveyRoutes.route('/:id').get(function (req, res) {
     let id = req.params.id;
-    const token = Utility.validateToken(req.headers);
-    if (token === null) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
         Survey.findById(id, function (err, survey) {
@@ -65,27 +88,38 @@ surveyRoutes.route('/:id').get(function (req, res) {
 });
 
 surveyRoutes.route('/update/:id').post(function (req, res) {
-    let id = req.params.id;
     let body = req.body;
-    console.log('data', id, body);
-    const token = Utility.validateToken(req.headers);
-    if (token === null) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });
     } else {
-        Survey.findById(req.params.id)
-            .then((survey) => {
-                Object.keys(body).forEach(function (key) {
-                    survey[key] = body[key];
-                });
-                survey.save()
-                    .then(survey => {
-                        res.status(200).json({ data: 'survey updated successfully' });
-                    })
-                    .catch(err => {
+        Survey.findById(req.params.id, function (err, survey) {
+            if (err) {
+                res.status(500).send({ error: err });
+            } else {
+                User.find({ _id: survey.publisherId }, function (err, user) {
+                    if (err) {
                         res.status(500).send({ error: err });
-                    });
-            })
-            .catch((err) => res.status(200).json({ data: 'survey updated failed' }))
+                    } else {
+                        if (user[0].email === jwtTokenObject.email ) {
+                            console.log('inside if')
+                            Object.keys(body).forEach(function (key) {
+                                survey[key] = body[key];
+                            });
+                            survey.save()
+                                .then(survey => {
+                                    res.status(200).json({ 'message' : 'survey updated successfully', data: survey });
+                                })
+                                .catch(err => {
+                                    res.status(500).send({ error: err });
+                                });
+                        } else {
+                            res.status(401).send({ error: 'Unauthorized to update this survey' });
+                        }
+                    };
+                });
+            }
+        });
     }
 });
 

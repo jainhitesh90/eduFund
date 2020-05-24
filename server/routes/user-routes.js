@@ -10,7 +10,8 @@ userRoutes.route('/signup').post(function (req, res) {
         if (!err) {
             if (result.length === 0) {
                 let user = new User(req.body)
-                let token = Utility.getToken(user.email);
+                let token = Utility.createToken(user.email);
+                user.token = token;
                 user.save((err, user) => {
                     if (!err) {
                         res.status(201).send({ user: { token: token } });
@@ -41,7 +42,7 @@ userRoutes.route('/login').post(function (req, res) {
                 if (match) {
                     var payload = user.toObject();
                     delete payload.password;
-                    payload.token = Utility.getToken(user.email);
+                    payload.token = user.token;
                     res.status(200).send({ user: payload });
                 } else {
                     res.status(200).send({ error: 'Incorrect password' });
