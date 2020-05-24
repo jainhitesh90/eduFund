@@ -80,25 +80,33 @@ userRoutes.route('/:id').get(function (req, res) {
     });
 });
 
-// userRoutes.route('/update/:id').post(function(req, res) {
-//     User.findById(req.params.id, function(err, user) {
-//         if (!user)
-//             res.status(404).send("data is not found");
-//         else
-//             user.user_name = req.body.user_name;
-//             user.user_email = req.body.user_email;
-//             user.user_age = req.body.user_age;
-//             user.save().then(user => {
-//                 res.json('User updated!');
-//             })
-//             .catch(err => {
-//                 res.status(400).send("Update not possible");
-//             });
-//     });
-// });
-
-// userRoutes.route('/deleteAllUsers').post(function (req, res) {
-//     User.deleteMany({}, res.json({data: 'removed all user'}))
-// });
+userRoutes.route('/takeSurvey').post(function (req, res) {
+    let body = req.body;
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
+        res.status(200).send({ error: 'Invalid token' });
+    } else {
+        User.find({ email: jwtTokenObject.email }, function (err, users) {
+            const user = users[0]
+            if (err) {
+                res.status(500).send({ error: err });
+            } else {
+                const surveyId = body.surveyId;
+                if (user.surveysTaken.indexOf(surveyId) === -1) {
+                    user.surveysTaken.push(surveyId);
+                    user.save()
+                        .then(user => {
+                            res.status(200).json({ 'message': 'survey taken successfully', data: user });
+                        })
+                        .catch(err => {
+                            res.status(500).send({ error: err });
+                        });
+                } else {
+                    res.status(200).send({ error: 'Survey already taken' });
+                }
+            };
+        });
+    }
+});
 
 module.exports = userRoutes;

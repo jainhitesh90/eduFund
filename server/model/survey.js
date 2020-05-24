@@ -14,7 +14,8 @@ let surveySchema = new Schema({
     targetGroup: {
         ageGroup: String,
         gender: String
-    }
+    },
+    surveyTaken: Boolean
 });
 
 module.exports = mongoose.model('Survey', surveySchema);

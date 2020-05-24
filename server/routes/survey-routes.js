@@ -82,11 +82,44 @@ surveyRoutes.route('/getRespondantSurveys').get(function (req, res) {
             } else if (result.length === 0) {
                 res.status(500).send({ error: 'User not found' });
             } else {
-                const targetGroup = {gender: result[0].gender, ageGroup: result[0].ageGroup};
-                Survey.find({targetGroup: targetGroup}, function (err, surveys) {
+                const user = result[0];
+                // const query1 = { targetGroup: null }
+                // const query2 = { targetGroup: { gender: (user.gender || 'both') } }
+                // const query3 = { targetGroup: { ageGroup: (user.ageGroup || 'all') } }
+                // const query4 = { targetGroup: { gender: (user.gender || 'both'), ageGroup: (user.ageGroup || 'all') } }
+                const query1 = { targetGroup: null }
+                const query2 = { targetGroup: { gender: user.gender } }
+                const query3 = { targetGroup: { gender: 'both' } }
+                const query4 = { targetGroup: { ageGroup: user.ageGroup } }
+                const query5 = { targetGroup: { ageGroup: 'all' } }
+                const query6 = { targetGroup: { gender: user.gender, ageGroup: user.ageGroup } }
+                const query7 = { targetGroup: { gender: 'both', ageGroup: user.ageGroup } }
+                const query8 = { targetGroup: { gender: user.gender, ageGroup: 'all' } }
+                const query9 = { targetGroup: { gender: 'both', ageGroup: 'all' } }
+                const query10 = { isPublished: true }
+
+                Survey.find({
+                    $and: [{
+                        $or: [query1, query2, query3, query4, query5, query6, query7, query8, query9]
+                    }, 
+                    {
+                        $or: [query10]
+                    }
+                    ]
+                }, function (err, surveys) {
                     if (err) {
                         res.status(500).send({ error: err });
                     } else {
+                        console.log('before', surveys);
+                        surveys.map(function(item) {
+                            if (user.surveysTaken.indexOf(item._id.toString()) !== -1) {
+                                item['surveyTaken'] = true;
+                            } else {
+                                item['surveyTaken'] = false;
+                            }
+                        });
+                        console.log('after', surveys);
+                        // iterate user object and send which surveys are taken;
                         res.status(200).send({ surveys: surveys });
                     }
                 });
@@ -125,14 +158,13 @@ surveyRoutes.route('/update/:id').post(function (req, res) {
                     if (err) {
                         res.status(500).send({ error: err });
                     } else {
-                        if (user[0].email === jwtTokenObject.email ) {
-                            console.log('inside if')
+                        if (user[0].email === jwtTokenObject.email) {
                             Object.keys(body).forEach(function (key) {
                                 survey[key] = body[key];
                             });
                             survey.save()
                                 .then(survey => {
-                                    res.status(200).json({ 'message' : 'survey updated successfully', data: survey });
+                                    res.status(200).json({ 'message': 'survey updated successfully', data: survey });
                                 })
                                 .catch(err => {
                                     res.status(500).send({ error: err });

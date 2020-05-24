@@ -26,6 +26,9 @@ let userSchema = new Schema({
     },
     password: {
         type: String
+    },
+    surveysTaken: {
+        type: Array
     }
 });
 
