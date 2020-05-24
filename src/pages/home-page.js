@@ -7,5 +7,5 @@ export default class HomePage extends Component {
                 <p onClick={this.signupNewUser}>HomePage!!</p>
             </div>
         )
-        }
+    }
 }

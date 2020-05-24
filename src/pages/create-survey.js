@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { isNil, isEmpty } from 'lodash';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Label, Card } from 'reactstrap';
 import { Redirect } from 'react-router';
 import CustomButton from '../custom-components/custom-button';
 import CustomInput from '../custom-components/custom-input';
@@ -41,7 +41,6 @@ export default class CreateSurvey extends Component {
 
     renderSurveyForm() {
         const { errorObject, errorMessage } = this.state;
-        console.log('state', this.state);
         return (
             <div style={{ padding: '16px', background: 'lightgrey' }}>
                 <Row>
@@ -51,6 +50,8 @@ export default class CreateSurvey extends Component {
                                 label={"Survey Title"}
                                 id={"title"}
                                 ref={"title"}
+                                mandatory={true}
+                                prependAddon='fa-info'
                                 errorMessage={errorObject.titleError}
                             />
                             {this.renderQuestionsSection()}
@@ -60,6 +61,7 @@ export default class CreateSurvey extends Component {
                                 id={"submit"}
                                 onClick={this.createSurvey}
                                 color={"primary"}
+                                style={{ margin: '48px auto auto', width: '240px' }}
                             />
                             <CustomError errorMessage={errorMessage} />
                         </form>
@@ -72,40 +74,54 @@ export default class CreateSurvey extends Component {
     renderQuestionsSection() {
         const self = this, { questions } = this.state;
         return <div>
-            {questions.length > 0 ? <p style={{ marginTop: '20px', color: 'red' }}>Questions</p> : null}
-            {this.state.questions.map(function (item, index) {
+            <span>
+                <Label
+                    style={{ marginTop: '10px', marginBottom: 0 }}>
+                    {'Questions'} {<sup style={{ color: 'red' }}>*</sup>}
+                </Label>
+                <Label
+                    style={{ marginLeft: '16px', color: 'blue', cursor: 'pointer' }}
+                    onClick={() => this.setState({ showAddNewQuestionModal: !this.state.showAddNewQuestionModal })}>
+                    Add New Question
+                    </Label>
+            </span>
+            {questions.map(function (item, index) {
                 return self.renderSingleQuestionSection(item, index + 1)
             })}
-            <CustomButton
-                label={"Add New Question"}
-                id={"addNewQuestion"}
-                onClick={() => this.setState({ showAddNewQuestionModal: !this.state.showAddNewQuestionModal })}
-                color={"primary"}
-            />
         </div>
     }
 
     renderSingleQuestionSection(item, questionNumber) {
-        return <div>
+        return <Card style={{ padding: '8px' }}>
             <p>Q{questionNumber}) {item.question}</p>
             {item.options.map(function (option, optionIndex) {
-                return isNil(option) || isEmpty(option) ? null : <p>{String.fromCharCode(97 + optionIndex)}) {option}</p>
+                return isNil(option) || isEmpty(option) ? null : <Label style={{ margin: 0 }}>{String.fromCharCode(97 + optionIndex)}) {option}</Label>
             })}
-        </div>
+        </Card>
     }
 
     renderTargetGroupSection() {
-        const { targetModalData } = this.state;
-        const label = !isNil(targetModalData.ageGroup) || !isNil(targetModalData.gender) ? 'Update Target Group' : 'Select Target Group';
+        const { ageGroup, gender } = this.state.targetModalData
+        const label = !isNil(ageGroup) || !isNil(gender) ? 'Update' : 'Select';
         return <div>
-            {!isNil(targetModalData.ageGroup) ? <p>Target Age Group : {targetModalData.ageGroup}</p> : null}
-            {!isNil(targetModalData.gender) ? <p>Target Gender : {targetModalData.gender}</p> : null}
-            <CustomButton
-                label={label}
-                id={"selectTargetGroup"}
-                onClick={() => this.setState({ showTargetModal: !this.state.showTargetModal })}
-                color={"primary"}
-            />
+            <span>
+                <Label
+                    style={{ marginTop: '10px', marginBottom: 0 }}>
+                    {'Target Group'}
+                </Label>
+                <Label
+                    style={{ marginLeft: '16px', color: 'blue', cursor: 'pointer' }}
+                    onClick={() => this.setState({ showTargetModal: !this.state.showTargetModal })}>
+                    {label}
+                </Label>
+            </span>
+            {
+                isNil(ageGroup) && isNil(gender) ? null :
+                    <Card style={{ padding: '8px' }}>
+                        {!isNil(ageGroup) ? <p>Age Group : {ageGroup}</p> : null}
+                        {!isNil(gender) ? <p>Gender : {gender}</p> : null}
+                    </Card>
+            }
         </div>
     }
 
@@ -134,7 +150,6 @@ export default class CreateSurvey extends Component {
     }
 
     updateQuestionsData(data) {
-        console.log('updateTargetGroupData', data);
         const state = this.state;
         if (data != null) {
             state.questions.push(data);
@@ -144,7 +159,6 @@ export default class CreateSurvey extends Component {
     }
 
     createSurvey = async () => {
-        console.log('state', this.state);
         let payload = {};
         payload.title = this.refs.title['reference'].current.value;
         payload.questions = this.state.questions;

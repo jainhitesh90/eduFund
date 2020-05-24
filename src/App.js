@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./logo.svg";
 import Login from "./pages/login.js";
-import Signup from "./pages/signup.js";
-import HomePage from "./pages/home-page.js";
+import Signup from "./pages/sign-up.js";
+// import HomePage from "./pages/home-page.js";
 import CreateSurvey from "./pages/create-survey.js";
-import SurveyList from "./pages/survey-list.js";
+import CoOrdinatorSurveys from "./pages/co-ordinator-survey-list.js";
+import RespondantsSurveys from "./pages/respondant-survey-list.js";
 
 class App extends Component {
   render() {
@@ -22,9 +23,11 @@ class App extends Component {
           <br/>
           <Route path="/login" exact component={Login} />
           <Route path="/sign-up" exact component={Signup} />
-          <Route path="/home" exact component={HomePage} />
-          <Route path="/my-surveys" exact component={SurveyList} />
-          <Route path="/create-survey" component={CreateSurvey} />
+          {/* <Route path="/home" exact component={HomePage} /> */}
+          <Route path="/co-ordinator/home" exact component={CoOrdinatorSurveys} />
+          <Route path="/co-ordinator/create-survey" component={CreateSurvey} />
+          <Route path="/respondant/home" exact component={RespondantsSurveys} />
+          
         </div>
       </Router>
     );

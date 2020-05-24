@@ -1,7 +1,11 @@
-import { isEmpty, startCase } from 'lodash';
+import { isNil, isEmpty, startCase } from 'lodash';
+import Constants from './constant';
 
 const validateNewAndConfirmPassword = (password, confirmPassword) => {
-    if (password !== confirmPassword) {
+    console.log('validateNewAndConfirmPassword', password, confirmPassword);
+    if (isNil(confirmPassword) || isEmpty(confirmPassword)) {
+        return "Confirm Password cannot be empty"
+    } else if (password !== confirmPassword) {
         return "Password should be same as Confirm Password"
     }
 }
@@ -22,6 +26,38 @@ const validateInputFields = (key, value) => {
     }
 }
 
+const getTargetAgeGroupOptions = () => {
+    const ageGroupOptions = Constants.ageGroup;
+    const allAgeGroupOption = { key: 'all', value: 'All' };
+    if (ageGroupOptions.indexOf(allAgeGroupOption) === -1) {
+        ageGroupOptions.push(allAgeGroupOption);
+    }
+    return ageGroupOptions;
+}
+
+const getTargetGenderOptions = () => {
+    const genderOptions = Constants.gender;
+    const bothGenderOption = { key: 'both', value: 'Both' };
+    if (genderOptions.indexOf(bothGenderOption) === -1) {
+        genderOptions.push(bothGenderOption);
+    }
+    return genderOptions;
+}
+
+const storeToken = (token) => {
+    localStorage.setItem('token', 'Bearer ' + token)
+}
+
+const retrieveToken = () => {
+    return localStorage.getItem('token');
+}
+
 export default {
-    validateNewAndConfirmPassword, validateInputFields, validateEmail
+    validateNewAndConfirmPassword, 
+    validateInputFields, 
+    validateEmail,
+    getTargetAgeGroupOptions,
+    getTargetGenderOptions,
+    storeToken,
+    retrieveToken
 };

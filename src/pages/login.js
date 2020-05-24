@@ -21,8 +21,8 @@ export default class Login extends Component {
 
   render() {
     //TODO need to check this way of routing again.
-    if (this.state.redirectToHome === true) {
-      return <Redirect to='/my-surveys' />
+    if (!isNil(this.state.redirectRoute)) {
+      return <Redirect to={this.state.redirectRoute} />
     }
     return (
       this.renderLoginForm()
@@ -111,11 +111,12 @@ export default class Login extends Component {
         })
       } else {
         console.log('success', res);
-        localStorage.setItem('token', 'Bearer ' + res.data.user.token)
+        const user = res.data.user;
+        Utility.storeToken(user.token);
         this.setState({
           user: res.user,
           errorMessage: null,
-          redirectToHome: true
+          redirectRoute: '/' + user.role + '/home'
         })
       }
     }

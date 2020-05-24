@@ -41,6 +41,8 @@ export default class SurveyQuestionModal extends Component {
                     label={"Option " + index}
                     id={"option" + index}
                     ref={"option" + index}
+                    mandatory={true}
+                    prependAddon='fa-circle'
                 />
             );
         }
@@ -50,6 +52,8 @@ export default class SurveyQuestionModal extends Component {
                 id={"question"}
                 ref={"question"}
                 errorMessage={errorObject.questionError}
+                mandatory={true}
+                prependAddon='fa-question'
             />
             {optionsObject}
         </div>

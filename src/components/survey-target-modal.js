@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CustomModal from '../custom-components/custom-modal';
 import CustomDropDown from '../custom-components/custom-dropdown';
-import Constant from '../utilities/constant';
+import Utility from '../utilities/utility';
 
 export default class SurveyTargetModal extends Component {
     constructor(props) {
@@ -38,14 +38,14 @@ export default class SurveyTargetModal extends Component {
                 label={"Target Gender"}
                 id={"gender"}
                 onChange={this.handleChange}
-                values={Constant.targetGender}
+                values={Utility.getTargetGenderOptions()}
                 errorMessage={errorObject.genderError}
             />
             <CustomDropDown
                 label={"Target Age Group"}
                 id={"ageGroup"}
                 onChange={this.handleChange}
-                values={Constant.targetAgeGroup}
+                values={Utility.getTargetAgeGroupOptions()}
                 errorMessage={errorObject.ageGroupError}
             />
         </div>

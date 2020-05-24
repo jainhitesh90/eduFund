@@ -28,8 +28,8 @@ export default class Signup extends Component {
 
   render() {
     //TODO need to check this way of routing again.
-    if (this.state.redirectToHome === true) {
-      return <Redirect to='/my-surveys' />
+    if (!isNil(this.state.redirectRoute)) {
+      return <Redirect to={this.state.redirectRoute} />
     }
     return (
       this.renderSignupForm()
@@ -146,6 +146,7 @@ export default class Signup extends Component {
       state.errorObject[key + "Error"] = Utility.validateInputFields(key, value);
     }
     state.errorObject['emailError'] = Utility.validateEmail(state.data.email); //validate email pattern
+    state.errorObject.confirmPasswordError = Utility.validateNewAndConfirmPassword(state.data.password, state.data.confirmPassword);
     this.setState(state, this.proceed);
   }
 
@@ -157,18 +158,27 @@ export default class Signup extends Component {
     for (let [key, value] of Object.entries(errorObject)) {
       errorObject[key] = value;
       if (!isNil(errorObject[key])) {
-        formError = true;
-        break;
+        if (this.state.data.role !== 'respondant') {
+          if (key === 'genderError' || key === 'ageGroupError') {
+            formError = false; // gender and ageGroup not required for roles other than respondant
+          } else {
+            formError = true;
+            break;
+          }
+        } else {
+          formError = true;
+          break;
+        }
       }
     }
     if (!formError) {
-      state.errorMessage = Utility.validateNewAndConfirmPassword(state.data.password, state.data.confirmPassword);
       this.setState(state, this.signUpUser);
     }
   }
 
   signUpUser = async () => {
     console.log('state', this.state);
+    const state = this.state;
     if (isNil(this.state.errorMessage)) {
       const res = await ApiHelper.postData('/user/signup', this.state.data);
       if (!isNil(res.data.error)) {
@@ -176,12 +186,13 @@ export default class Signup extends Component {
           errorMessage: res.data.error
         })
       } else {
+        const user = res.data.user;
         console.log('successfully signup', res.data.user);
-        localStorage.setItem('token', 'Bearer ' + res.data.user.token)
+        Utility.storeToken(user.token);
         this.setState({
           user: res.user,
           errorMessage: null,
-          redirectToHome: true
+          redirectRoute: '/' + state.data.role + '/home'
         })
       }
     }

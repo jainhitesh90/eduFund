@@ -7,7 +7,7 @@ export default class CustomModal extends Component {
     const { onClick, onCancel, showModal, className, actionButtonText, title, body } = this.props;
     return (
       <Modal isOpen={showModal} className={className}>
-        <ModalHeader>{title}</ModalHeader>
+        <ModalHeader style={{margin: 'auto'}}>{title}</ModalHeader>
         <ModalBody>
           {body}
         </ModalBody>

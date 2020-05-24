@@ -5,7 +5,7 @@ import CustomButton from '../custom-components/custom-button';
 import ApiHelper from '../utilities/api-helper';
 import { Row, Col } from 'reactstrap';
 
-export default class SurveyList extends Component {
+export default class CoorindatorSurveyList extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -20,7 +20,7 @@ export default class SurveyList extends Component {
     }
 
     getSurveyList = async () => {
-        const res = await ApiHelper.getData('/survey/getMySurveys');
+        const res = await ApiHelper.getData('/survey/getCoOrindtorSurveys');
         console.log('ressss', res);
         if (!isNil(res.data.surveys)) {
             this.setState({
@@ -37,7 +37,7 @@ export default class SurveyList extends Component {
 
     render() {
         if (this.state.redirect === true) {
-            return <Redirect to='/create-survey' />
+            return <Redirect to='/co-ordinator/create-survey' />
         }
         return (
             <div style={{ background: 'lightgray', padding: '24px' }}>

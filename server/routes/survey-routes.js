@@ -46,7 +46,7 @@ surveyRoutes.route('/getAllSurveys').get(function (req, res) {
     }
 });
 
-surveyRoutes.route('/getMySurveys').get(function (req, res) {
+surveyRoutes.route('/getCoOrindtorSurveys').get(function (req, res) {
     const jwtTokenObject = Utility.validateToken(req.headers);
     if (jwtTokenObject === null) {
         res.status(200).send({ error: 'Invalid token' });

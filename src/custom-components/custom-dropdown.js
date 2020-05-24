@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CustomError from './custom-error';
-import { FormGroup, Input, Label } from 'reactstrap';
+import { Input, Label } from 'reactstrap';
 
 export default class CustomDropDown extends Component {
   render() {
