@@ -4,13 +4,15 @@ import CustomButton from '../custom-components/custom-button';
 import ApiHelper from '../utilities/api-helper';
 import { Row, Col } from 'reactstrap';
 import TakeSurveyModal from '../components/take-survey-modal';
+import SurveyResponseModal from '../components/survey-response-modal';
 
 export default class RespondantSurveyList extends Component {
     constructor(props) {
         super(props)
         this.state = {
             surveys: [],
-            showTakeSurveyModal: false
+            showTakeSurveyModal: false,
+            showSurveyResponseModal: false
         }
         this.getSurveyList = this.getSurveyList.bind(this);
         this.takeSurvey = this.takeSurvey.bind(this);
@@ -43,7 +45,15 @@ export default class RespondantSurveyList extends Component {
                     this.state.showTakeSurveyModal ? <TakeSurveyModal
                         showModal={this.state.showTakeSurveyModal}
                         survey={this.state.survey}
-                        onCancel={this.onCancel}
+                        onCancel={() => this.setState({showTakeSurveyModal: false})}
+                        onClick={() => this.setState({showTakeSurveyModal: false})}
+                    /> : null
+                }
+                {
+                    this.state.showSurveyResponseModal ? <SurveyResponseModal
+                        showModal={this.state.showSurveyResponseModal}
+                        survey={this.state.survey}
+                        onClick={() => this.setState({showSurveyResponseModal: false})}
                     /> : null
                 }
                 <div style={{ background: 'lightgray', padding: '24px' }}>
@@ -66,7 +76,7 @@ export default class RespondantSurveyList extends Component {
                 </Col>
                 <Col xs={4}>
                     {!isNil(item.userSurveyResponse) ?
-                        <p onClick={() => self.viewMyResponse(item._id)} style={{ color: 'blue', cursor: 'pointer' }}>
+                        <p onClick={() => self.viewMyResponse(item)} style={{ color: 'blue', cursor: 'pointer' }}>
                             View My Response
                         </p> :
                         <p onClick={() => self.takeSurvey(item)} style={{ color: 'blue', cursor: 'pointer' }}>
@@ -77,8 +87,12 @@ export default class RespondantSurveyList extends Component {
         })
     }
 
-    viewMyResponse(id) {
-        console.log('View survey with id', id);
+    viewMyResponse(survey) {
+        this.setState({
+            showSurveyResponseModal: true,
+            survey: survey
+        })
+        console.log('View survey with id', survey._id);
     }
 
     takeSurvey(survey) {

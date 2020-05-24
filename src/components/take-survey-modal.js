@@ -55,9 +55,11 @@ export default class TakeSurveyModal extends Component {
 
     renderSingleQuestionSection(data, index) {
         const options = data.options || [];
+        const questionNumber = index + 1;
+        const response = this.props.survey.userSurveyResponse || {};
         return (
             <CustomRadioGroup
-                label={data.question}
+                label={questionNumber + ') ' + data.question}
                 id={index}
                 onChange={this.handleChange}
                 values={options}
@@ -107,8 +109,7 @@ export default class TakeSurveyModal extends Component {
                 console.log('survey submitted successfully', res.data);
                 this.setState({
                     redirectToHome: true
-                })
-                // self.props.onSubmit();
+                }, this.props.onSubmit)
             }
         }
     }
