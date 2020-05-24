@@ -3,7 +3,6 @@ const userRoutes = express.Router();
 const bcrypt = require('bcrypt');
 
 let User = require('../model/user');
-// let SurveyResponse = require('../model/survey-response');
 let Utility = require('../utilities/utility');
 
 userRoutes.route('/signup').post(function (req, res) {

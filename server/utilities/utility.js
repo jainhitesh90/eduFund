@@ -1,12 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 class Utility {
-    // static secret = process.env.JWT_SECRET;
-    static secret = 'youraccesstokensecret'; //TODO remove hardcoded and check why dotEnv is not working
+    static secret = process.env.JWT_SECRET;
     static options = { expiresIn: '1y', issuer: 'https://edu-fund.io' };
 
     static createToken = (email) => {
-        console.log('createToken secret', this.secret);
         const payload = { email: email };
         const token = jwt.sign(payload, this.secret, this.options);
         return token;

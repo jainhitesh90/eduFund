@@ -27,21 +27,13 @@ const validateInputFields = (key, value) => {
 }
 
 const getTargetAgeGroupOptions = () => {
-    const ageGroupOptions = Constants.ageGroup;
-    const allAgeGroupOption = { key: 'all', value: 'All' };
-    if (ageGroupOptions.indexOf(allAgeGroupOption) === -1) {
-        ageGroupOptions.push(allAgeGroupOption);
-    }
-    return ageGroupOptions;
+    var result = Constants.ageGroup.concat([{ key: 'all', value: 'All' }]);
+    return result;
 }
 
 const getTargetGenderOptions = () => {
-    const genderOptions = Constants.gender;
-    const bothGenderOption = { key: 'both', value: 'Both' };
-    if (genderOptions.indexOf(bothGenderOption) === -1) {
-        genderOptions.push(bothGenderOption);
-    }
-    return genderOptions;
+    var result = Constants.gender.concat([{ key: 'both', value: 'Both' }]);
+    return result;
 }
 
 const storeToken = (token) => {
