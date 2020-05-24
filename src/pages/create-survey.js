@@ -27,7 +27,7 @@ export default class CreateSurvey extends Component {
     render() {
         //TODO need to check this way of routing again.
         if (this.state.redirectToHome === true) {
-            return <Redirect to='/my-surveys' />
+            return <Redirect to='/co-ordinator/home' />
         }
         return (
             <div>

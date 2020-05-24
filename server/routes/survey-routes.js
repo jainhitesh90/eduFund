@@ -71,6 +71,30 @@ surveyRoutes.route('/getCoOrindtorSurveys').get(function (req, res) {
     }
 });
 
+surveyRoutes.route('/getRespondantSurveys').get(function (req, res) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
+        res.status(200).send({ error: 'Invalid token' });
+    } else {
+        User.find({ email: jwtTokenObject.email }, function (err, result) {
+            if (err) {
+                res.status(500).send({ error: err });
+            } else if (result.length === 0) {
+                res.status(500).send({ error: 'User not found' });
+            } else {
+                const targetGroup = {gender: result[0].gender, ageGroup: result[0].ageGroup};
+                Survey.find({targetGroup: targetGroup}, function (err, surveys) {
+                    if (err) {
+                        res.status(500).send({ error: err });
+                    } else {
+                        res.status(200).send({ surveys: surveys });
+                    }
+                });
+            }
+        });
+    }
+});
+
 surveyRoutes.route('/:id').get(function (req, res) {
     let id = req.params.id;
     const jwtTokenObject = Utility.validateToken(req.headers);
