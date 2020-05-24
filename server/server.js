@@ -3,11 +3,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
-const PORT = 8080;
 require('dotenv').config();
 
 const userRouter = require('./routes/user-routes.js')
 const surveyRouter = require('./routes/survey-routes.js')
+const port = parseInt(process.env.PORT)
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -21,6 +21,6 @@ connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 })
 
-app.listen(PORT, function() {
-    console.log("Server is running on Port: " + PORT);
+app.listen(port, function() {
+    console.log("Server is running on Port: " + port);
 });

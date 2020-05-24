@@ -44,6 +44,10 @@ const retrieveToken = () => {
     return localStorage.getItem('token');
 }
 
+const deleteToken = () => {
+    return localStorage.removeItem('token');
+}
+
 export default {
     validateNewAndConfirmPassword, 
     validateInputFields, 
@@ -51,5 +55,6 @@ export default {
     getTargetAgeGroupOptions,
     getTargetGenderOptions,
     storeToken,
-    retrieveToken
+    retrieveToken,
+    deleteToken
 };
