@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import CustomModal from '../custom-components/custom-modal';
-import { Redirect } from 'react-router';
 
 export default class SurveyResponseModal extends Component {
     constructor(props) {
@@ -10,15 +9,6 @@ export default class SurveyResponseModal extends Component {
     }
 
     render() {
-        if (this.state.redirectToHome === true) {
-            return <Redirect to='/respondant/home' />
-        }
-        return (
-            this.renderModal()
-        )
-    }
-
-    renderModal() {
         console.log('survey', this.props.survey);
         const { survey, onClick } = this.props;
         return <CustomModal

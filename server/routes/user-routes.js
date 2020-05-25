@@ -70,6 +70,22 @@ userRoutes.route('/getAllUsers').get(function (req, res) {
     });
 });
 
+userRoutes.route('/getProfile').get(function (req, res) {
+    const jwtTokenObject = Utility.validateToken(req.headers);
+    if (jwtTokenObject === null) {
+        res.status(200).send({ error: 'Invalid token' });
+    } else {
+        User.find({ email: jwtTokenObject.email }, function (err, users) {
+            const user = users[0]
+            if (err) {
+                res.status(500).send({ error: err });
+            } else {
+                res.status(200).send({ user: user });
+            }
+        });
+    }
+});
+
 userRoutes.route('/:id').get(function (req, res) {
     let id = req.params.id;
     User.findById(id, function (err, user) {

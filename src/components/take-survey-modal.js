@@ -3,7 +3,6 @@ import CustomModal from '../custom-components/custom-modal';
 import CustomRadioGroup from '../custom-components/custom-radio-group';
 import ApiHelper from '../utilities/api-helper';
 import {isNil} from 'lodash';
-import { Redirect } from 'react-router';
 
 export default class TakeSurveyModal extends Component {
     constructor(props) {
@@ -15,19 +14,9 @@ export default class TakeSurveyModal extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.submitSurvey = this.submitSurvey.bind(this);
-        // this.updateTargetGroupData = this.updateTargetGroupData.bind(this);
     }
 
     render() {
-        if (this.state.redirectToHome === true) {
-            return <Redirect to='/respondant/home' />
-        }
-        return (
-            this.renderModal()
-        )
-    }
-
-    renderModal() {
         console.log('survey', this.props.survey);
         const { survey } = this.props;
         return <CustomModal
@@ -105,9 +94,7 @@ export default class TakeSurveyModal extends Component {
                 })
             } else {
                 console.log('survey submitted successfully', res.data);
-                this.setState({
-                    redirectToHome: true
-                }, this.props.onSubmit)
+                this.props.onSubmit();
             }
         }
     }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { isNil, isEmpty } from 'lodash';
 import { Row, Col, Label, Card } from 'reactstrap';
-import { Redirect } from 'react-router';
 import CustomButton from '../custom-components/custom-button';
 import CustomModal from '../custom-components/custom-modal';
 import CustomInput from '../custom-components/custom-input';
@@ -183,9 +182,6 @@ export default class CreateSurveyModal extends Component {
             } else {
                 console.log('survey added successfully', res.data);
                 this.props.onCreateSurveySuccessfully();
-                // this.setState({
-                //     redirectToHome: true
-                // })
             }
         }
     }

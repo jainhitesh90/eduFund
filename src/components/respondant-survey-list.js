@@ -21,21 +21,7 @@ export default class RespondantSurveyList extends Component {
         this.getSurveyList();
     }
 
-    getSurveyList = async () => {
-        const res = await ApiHelper.getData('/survey/getRespondantSurveys');
-        console.log('ressss', res);
-        if (!isNil(res.data.surveys)) {
-            this.setState({
-                surveys: res.data.surveys,
-                error: null
-            })
-        } else {
-            this.setState({
-                surveys: [],
-                error: res.data.error
-            })
-        }
-    }
+    
 
     render() {
         return (
@@ -56,7 +42,7 @@ export default class RespondantSurveyList extends Component {
                     /> : null
                 }
                 <div style={{ background: 'lightgray', padding: '24px' }}>
-                    <p style={{ color: 'blue', paddingTop: '24px' }}>My Survey List here!!</p>
+                    <p style={{ color: 'blue', paddingTop: '24px' }}>Respondant Survey List here!!</p>
                     {!isNil(this.state.error) ? <p style={{ color: 'red' }}>Error : {this.state.error}</p> : null}
                     {this.renderSurveyList()}
                 </div>
@@ -114,20 +100,19 @@ export default class RespondantSurveyList extends Component {
         })
     }
 
-
-    // takeSurvey = async (id) => {
-    //     console.log('Take survey id', id);
-    //     const res = await ApiHelper.postData('/user/takeSurvey', { surveyId: id });
-    //     if (!isNil(res.error)) {
-    //         console.log('failed submitting survey', res.error);
-    //         this.setState({
-    //             errorMessage: res.error
-    //         })
-    //     } else {
-    //         console.log('survey submitted successfully', res.data);
-    //         // this.setState({
-    //         //     redirectToHome: true
-    //         // })
-    //     }
-    // }
+    getSurveyList = async () => {
+        const res = await ApiHelper.getData('/survey/getRespondantSurveys');
+        console.log('ressss', res);
+        if (!isNil(res.data.surveys)) {
+            this.setState({
+                surveys: res.data.surveys,
+                error: null
+            })
+        } else {
+            this.setState({
+                surveys: [],
+                error: res.data.error
+            })
+        }
+    }
 }

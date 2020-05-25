@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./pages/login.js";
 import Signup from "./pages/sign-up.js";
-import CoOrdinatorSurveys from "./pages/co-ordinator-survey-list.js";
-import RespondantsSurveys from "./pages/respondant-survey-list.js";
+import Homepage from "./pages/homepage.js";
 import NavBarComponent from "./components/nav-bar";
+import ErrorComponent from './components/error-component';
 
 class App extends Component {
   render() {
@@ -14,10 +14,12 @@ class App extends Component {
         <div className="container">
           <NavBarComponent onLogout={this.logout} />
           <br />
-          <Route path="/login" exact component={Login} />
-          <Route path="/sign-up" exact component={Signup} />
-          <Route path="/co-ordinator/home" exact component={CoOrdinatorSurveys} />
-          <Route path="/respondant/home" exact component={RespondantsSurveys} />
+          <Switch>
+            <Route path="/" exact component={Homepage} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/sign-up" exact component={Signup} />
+            <Route component={ErrorComponent} />
+          </Switch>
         </div>
       </Router>
     );

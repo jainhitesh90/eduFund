@@ -28,8 +28,8 @@ export default class Signup extends Component {
 
   render() {
     //TODO need to check this way of routing again.
-    if (!isNil(this.state.redirectRoute)) {
-      return <Redirect to={this.state.redirectRoute} />
+    if (!isNil(this.state.user)) {
+      return <Redirect to={'/'} />
     }
     return (
       this.renderSignupForm()
@@ -191,8 +191,7 @@ export default class Signup extends Component {
         Utility.storeToken(user.token);
         this.setState({
           user: res.user,
-          errorMessage: null,
-          redirectRoute: '/' + state.data.role + '/home'
+          errorMessage: null
         })
       }
     }
