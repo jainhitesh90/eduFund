@@ -7,7 +7,7 @@ const userRouter = require('./routes/user-routes.js')
 const surveyRouter = require('./routes/survey-routes.js')
 
 const app = express();
-const port = parseInt(process.env.PORT)
+const port = parseInt(process.env.PORT) || 8080
 const uri = process.env.DB_URI
 
 mongoose.connect(uri, { useNewUrlParser: true });
