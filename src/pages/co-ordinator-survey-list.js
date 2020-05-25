@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { isNil } from 'lodash';
-import { Redirect } from 'react-router';
 import CustomButton from '../custom-components/custom-button';
 import ApiHelper from '../utilities/api-helper';
 import { Row, Col } from 'reactstrap';
+import CreateSurveyModal from '../components/create-survey-modal';
 
 export default class CoorindatorSurveyList extends Component {
     constructor(props) {
@@ -13,6 +13,7 @@ export default class CoorindatorSurveyList extends Component {
         }
         this.getSurveyList = this.getSurveyList.bind(this);
         this.onAddNewSurveyClick = this.onAddNewSurveyClick.bind(this);
+        this.onCreateSurveySuccessfully = this.onCreateSurveySuccessfully.bind(this);
     }
 
     componentWillMount() {
@@ -36,16 +37,26 @@ export default class CoorindatorSurveyList extends Component {
     }
 
     render() {
-        if (this.state.redirect === true) {
-            return <Redirect to='/co-ordinator/create-survey' />
-        }
+        // if (this.state.redirect === true) {
+        //     return <Redirect to='/co-ordinator/create-survey' />
+        // }
         return (
-            <div style={{ background: 'lightgray', padding: '24px' }}>
-                {this.renderAddSurveyButton()}
-                <p style={{ color: 'blue', paddingTop: '24px' }}>My Survey List here!!</p>
-                {!isNil(this.state.error) ? <p style={{ color: 'red' }}>Error : {this.state.error}</p> : null}
-                {this.renderSurveyList()}
+            <div>
+                {
+                    this.state.showCreateSurveyModal ? <CreateSurveyModal
+                        showCreateSurveyModal={this.state.showCreateSurveyModal}
+                        onCancelCreateSurvey={this.onCancelCreateSurvey}
+                        onCreateSurveySuccessfully={this.onCreateSurveySuccessfully}
+                    /> : null
+                }
+                <div style={{ background: 'lightgray', padding: '24px' }}>
+                    {this.renderAddSurveyButton()}
+                    <p style={{ color: 'blue', paddingTop: '24px' }}>My Survey List here!!</p>
+                    {!isNil(this.state.error) ? <p style={{ color: 'red' }}>Error : {this.state.error}</p> : null}
+                    {this.renderSurveyList()}
+                </div>
             </div>
+
         )
     }
 
@@ -60,7 +71,20 @@ export default class CoorindatorSurveyList extends Component {
 
     onAddNewSurveyClick() {
         this.setState({
-            redirect: true
+            showCreateSurveyModal: true
+        });
+    }
+
+    onCreateSurveySuccessfully() {
+        this.setState({
+            showCreateSurveyModal: false
+        });
+        this.getSurveyList();
+    }
+
+    onCancelCreateSurvey() {
+        this.setState({
+            showCreateSurveyModal: false
         });
     }
 
@@ -73,7 +97,7 @@ export default class CoorindatorSurveyList extends Component {
                     <p>{item.title}</p>
                 </Col>
                 <Col xs={4}>
-                    {item.isPublished ? <p style={{color: 'blue'}}>Published</p> : <CustomButton
+                    {item.isPublished ? <p style={{ color: 'blue' }}>Published</p> : <CustomButton
                         label={"Publish Survey"}
                         id={"publishSurvey"}
                         onClick={() => self.publishSurvey(item._id)}
@@ -86,7 +110,7 @@ export default class CoorindatorSurveyList extends Component {
 
     publishSurvey = async (id) => {
         console.log('Publishing survey with id', id);
-        const res = await ApiHelper.postData('/survey/update/' + id, {isPublished: true});
+        const res = await ApiHelper.postData('/survey/update/' + id, { isPublished: true });
         console.log('ressss', res);
         this.getSurveyList();
         alert('Survey updated successfully')

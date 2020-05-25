@@ -3,13 +3,14 @@ import { isNil, isEmpty } from 'lodash';
 import { Row, Col, Label, Card } from 'reactstrap';
 import { Redirect } from 'react-router';
 import CustomButton from '../custom-components/custom-button';
+import CustomModal from '../custom-components/custom-modal';
 import CustomInput from '../custom-components/custom-input';
 import CustomError from '../custom-components/custom-error';
-import SurveyTargetModal from '../components/survey-target-modal';
-import SurveyQuestionModal from '../components/survey-question-modal';
+import SurveyTargetModal from './survey-target-modal';
+import SurveyQuestionModal from './survey-question-modal';
 import ApiHelper from '../utilities/api-helper';
 
-export default class CreateSurvey extends Component {
+export default class CreateSurveyModal extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -25,13 +26,22 @@ export default class CreateSurvey extends Component {
     }
 
     render() {
-        //TODO need to check this way of routing again.
-        if (this.state.redirectToHome === true) {
-            return <Redirect to='/co-ordinator/home' />
-        }
+        return (
+            this.renderModal()
+        )
+    }
+
+    renderModal() {
+        return <CustomModal
+            title={'Create New Survey'}
+            showModal={this.props.showCreateSurveyModal}
+            actionButtonText={'Add'}
+            body={this.renderModalBody()} />
+    }
+
+    renderModalBody() {
         return (
             <div>
-                <p>Create Survey here!!</p>
                 {this.renderSurveyForm()}
                 {this.renderTargetModal()}
                 {this.renderAddNewQuestionModal()}
@@ -172,9 +182,10 @@ export default class CreateSurvey extends Component {
                 })
             } else {
                 console.log('survey added successfully', res.data);
-                this.setState({
-                    redirectToHome: true
-                })
+                this.props.onCreateSurveySuccessfully();
+                // this.setState({
+                //     redirectToHome: true
+                // })
             }
         }
     }
