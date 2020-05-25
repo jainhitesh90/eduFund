@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,7 +8,7 @@ const userRouter = require('./routes/user-routes.js')
 const surveyRouter = require('./routes/survey-routes.js')
 
 const app = express();
-const port = parseInt(process.env.PORT) || 8080
+const port = parseInt(process.env.PORT)
 const uri = process.env.DB_URI
 
 mongoose.connect(uri, { useNewUrlParser: true });
@@ -21,5 +22,5 @@ app.use(bodyParser.json());
 app.use('/user', userRouter);
 app.use('/survey', surveyRouter);
 app.listen(port, function() {
-    console.log("Server is running on Port: " + port);
+    console.log("Server is running on Port : " + port);
 });

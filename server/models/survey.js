@@ -2,9 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let surveySchema = new Schema({
-    publisherId : String,
-    isPublished: Boolean,
-    title: String,
+    publisherId: {
+        type: String
+    },
+    isPublished: {
+        type: Boolean, 
+        default: false
+    },
+    title: {
+        type: String
+    },
     questions : [
         {
             question: String,

@@ -62,7 +62,8 @@ export default class CoorindatorSurveyList extends Component {
 
     onCreateSurveySuccessfully() {
         this.setState({
-            showCreateSurveyModal: false
+            showCreateSurveyModal: false,
+            showSpinner: true
         });
         this.getSurveyList();
     }

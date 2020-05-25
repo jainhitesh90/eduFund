@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { isNil, isEmpty } from 'lodash';
+import { isNil, isEmpty, startCase } from 'lodash';
 import { Row, Col, Label, Card } from 'reactstrap';
 import CustomButton from '../custom-components/custom-button';
 import CustomModal from '../custom-components/custom-modal';
@@ -127,8 +127,8 @@ export default class CreateSurveyModal extends Component {
             {
                 isNil(ageGroup) && isNil(gender) ? null :
                     <Card style={{ padding: '8px' }}>
-                        {!isNil(ageGroup) ? <p>Age Group : {ageGroup}</p> : null}
-                        {!isNil(gender) ? <p>Gender : {gender}</p> : null}
+                        {!isNil(ageGroup) ? <p>Age Group : {startCase(ageGroup)}</p> : null}
+                        {!isNil(gender) ? <p>Gender : {startCase(gender)}</p> : null}
                     </Card>
             }
         </div>

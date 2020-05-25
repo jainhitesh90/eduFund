@@ -9,7 +9,7 @@ const getData = async function get(url) {
     }
     return await axios.get(baseUrl + url, { headers })
         .then(result => { return result })
-        .catch(error => { return Promise.reject(error); });
+        .catch(error => { return error.response; });
 }
 
 const postData = async function post(url, payload) {

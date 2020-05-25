@@ -50,17 +50,17 @@ export default class Homepage extends Component {
     getUserProfile = async () => {
         const res = await ApiHelper.getData('/user/getProfile');
         console.log('ressss', res);
-        if (!isNil(res.data.user)) {
+        if (res.data.errorMessage != null) {
+            this.setState({
+                user: null,
+                showSpinner: false,
+                error: res.data.errorMessage
+            })
+        } else {
             this.setState({
                 user: res.data.user,
                 showSpinner: false,
                 error: null
-            })
-        } else {
-            this.setState({
-                user: null,
-                showSpinner: false,
-                error: res.data.error
             })
         }
     }
