@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import CustomModal from '../custom-components/custom-modal';
-import CustomRadioGroup from '../custom-components/custom-radio-group';
-import ApiHelper from '../utilities/api-helper';
-import { isNil } from 'lodash';
 import { Redirect } from 'react-router';
 
 export default class SurveyResponseModal extends Component {
@@ -50,11 +47,13 @@ export default class SurveyResponseModal extends Component {
     renderSingleQuestionSection(data, index, answerIndex) {
         const questionNumber = index + 1;
         let answer = null;
-        data.options.map(function(item) {
+        for(let m = 0; m < data.options.length; m++) {
+            const item = data.options[m];
             if (item.key === answerIndex) {
                 answer = item.value;
+                break;
             }
-        })
+        }
         return (
             <div>
                 <p>{questionNumber + ') ' + data.question}</p>

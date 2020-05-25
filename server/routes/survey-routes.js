@@ -112,6 +112,12 @@ surveyRoutes.route('/getRespondantSurveys').get(function (req, res) {
                         let tempSurveys = [];
                         for (let i = 0; i < surveys.length; i++) {
                             let item = surveys[i];
+                            // for empty surveysTaken, return all surveys found from database
+                            if (user.surveysTaken.length === 0) {
+                                tempSurveys = surveys;
+                                break;
+                            }
+                            // iterate and see if the survey is already taken by the user or not
                             for (let m = 0; m < user.surveysTaken.length; m++) {
                                 const userSurveyResponse = user.surveysTaken[m];
                                 if (userSurveyResponse.surveyId.toString() === item._id.toString()) {

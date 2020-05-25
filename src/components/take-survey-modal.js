@@ -56,7 +56,6 @@ export default class TakeSurveyModal extends Component {
     renderSingleQuestionSection(data, index) {
         const options = data.options || [];
         const questionNumber = index + 1;
-        const response = this.props.survey.userSurveyResponse || {};
         return (
             <CustomRadioGroup
                 label={questionNumber + ') ' + data.question}
@@ -93,7 +92,6 @@ export default class TakeSurveyModal extends Component {
     }
 
     submitSurvey = async () => {
-        const self = this;
         let payload = {};
         payload.surveyId = this.props.survey._id;
         payload.response = this.state.response;

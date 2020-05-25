@@ -4,16 +4,11 @@ import logo from "../logo.svg";
 import Utility from '../utilities/utility';
 
 export default class NavBarComponent extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
-        console.log('rendering navbar');
         return (
             <Navbar color="light" light expand="md">
                 <NavbarBrand href="/"> <img src={logo} width="30" height="30" alt="EduFundLogo" /></NavbarBrand>
-                <NavbarBrand href="/">EduFund Surveys!</NavbarBrand>
+                <NavbarBrand href="/">EduFund Surveys</NavbarBrand>
                 <NavbarToggler />
                 <Collapse navbar>
                     <Nav className="mr-auto" navbar></Nav>

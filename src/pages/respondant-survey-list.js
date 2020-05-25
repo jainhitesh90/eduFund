@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { isNil } from 'lodash';
-import CustomButton from '../custom-components/custom-button';
 import ApiHelper from '../utilities/api-helper';
 import { Row, Col } from 'reactstrap';
 import TakeSurveyModal from '../components/take-survey-modal';
