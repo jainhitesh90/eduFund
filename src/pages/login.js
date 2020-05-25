@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Card } from 'reactstrap';
+import { Row, Col, Card, Label } from 'reactstrap';
 import { isNil } from 'lodash';
-import { Redirect } from 'react-router';
 import CustomInput from '../custom-components/custom-input';
 import CustomError from '../custom-components/custom-error';
 import CustomButton from '../custom-components/custom-button';
+import SpinnerComponent from '../custom-components/custom-spinner';
 import ApiHelper from '../utilities/api-helper';
 import Utility from '../utilities/utility';
 
@@ -17,19 +17,10 @@ export default class Login extends Component {
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.loginUser = this.loginUser.bind(this);
+    this.navigateToSignUpPage = this.navigateToSignUpPage.bind(this);
   }
 
   render() {
-    //TODO need to check this way of routing again.
-    if (!isNil(this.state.user)) {
-      return <Redirect to={'/'} />
-    }
-    return (
-      this.renderLoginForm()
-    )
-  }
-
-  renderLoginForm() {
     const { errorObject, errorMessage } = this.state;
     return (
       <Row>
@@ -53,19 +44,40 @@ export default class Login extends Component {
                 prependAddon='fa-lock'
                 errorMessage={errorObject.passwordError}
               />
-              <CustomButton
-                label={"Login"}
-                id={"login"}
-                onClick={this.handleSubmit}
-                color={"primary"}
-                style={{margin: '24px auto auto', width: '144px' }}
-              />
+              {
+                this.state.showSpinner ? <SpinnerComponent /> :
+                  <CustomButton
+                    label={"Login"}
+                    id={"login"}
+                    onClick={this.handleSubmit}
+                    color={"primary"}
+                    style={{ margin: '24px auto auto', width: '144px' }}
+                  />
+              }
               <CustomError errorMessage={errorMessage} />
+              {this.renderSignUpLink()}
             </form>
           </Card>
         </Col>
       </Row>
     );
+  }
+
+  renderSignUpLink() {
+    return <Label style={{ color: 'blue', cursor: 'pointer' }}
+      onClick={this.navigateToSignUpPage}>New User?</Label>
+  }
+
+  navigateToSignUpPage() {
+    this.props.history.push({
+      pathname: '/sign-up'
+    })
+  }
+
+  navigateToHomePage() {
+    this.props.history.push({
+      pathname: '/'
+    })
   }
 
   handleSubmit() {
@@ -96,28 +108,23 @@ export default class Login extends Component {
         break;
       }
     }
-    if (!formError) {
+    if (!formError && isNil(this.state.errorMessage)) {
+      state.showSpinner = true;
       this.setState(state, this.loginUser);
     }
   }
 
   loginUser = async () => {
-    if (isNil(this.state.errorMessage)) {
       const res = await ApiHelper.postData('/user/login', this.state.data);
       if (!isNil(res.data.error)) {
         console.log('failure', res);
         this.setState({
-          errorMessage: res.data.error
+          errorMessage: res.data.error,
+          showSpinner: false
         })
       } else {
-        console.log('success', res);
-        const user = res.data.user;
-        Utility.storeToken(user.token);
-        this.setState({
-          user: res.user,
-          errorMessage: null
-        })
+        Utility.storeToken(res.data.user.token);
+        this.navigateToHomePage();
       }
-    }
   }
 }

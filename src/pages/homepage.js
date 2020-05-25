@@ -3,8 +3,8 @@ import { Redirect } from 'react-router';
 import { isNil } from 'lodash';
 import RespondantHomePage from '../components/respondant-survey-list';
 import CordinatorHomePage from '../components/co-ordinator-survey-list';
+import SpinnerComponent from '../custom-components/custom-spinner';
 import ApiHelper from '../utilities/api-helper';
-import Spinner from '../custom-components/custom-spinner';
 import Utility from '../utilities/utility';
 
 export default class Homepage extends Component {
@@ -31,7 +31,7 @@ export default class Homepage extends Component {
     renderHomePage() {
         const { error, user } = this.state;
         if (this.state.showSpinner) {
-            return <Spinner />
+            return <SpinnerComponent />
         } else {
             if (!isNil(error)) {
                 return <p>{error}</p>

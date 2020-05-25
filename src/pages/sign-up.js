@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Row, Col, Card } from 'reactstrap';
+import { Row, Col, Card, Label } from 'reactstrap';
 import { isNil } from 'lodash';
-import { Redirect } from 'react-router';
 import CustomInput from '../custom-components/custom-input';
 import CustomButton from '../custom-components/custom-button';
 import CustomDropDown from '../custom-components/custom-dropdown';
 import CustomError from '../custom-components/custom-error';
+import SpinnerComponent from '../custom-components/custom-spinner';
 import ApiHelper from '../utilities/api-helper';
 import Utility from '../utilities/utility';
 import Constant from '../utilities/constant';
@@ -24,23 +24,14 @@ export default class Signup extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.signUpUser = this.signUpUser.bind(this);
+    this.navigateToLoginPage = this.navigateToLoginPage.bind(this);
   }
 
   render() {
-    //TODO need to check this way of routing again.
-    if (!isNil(this.state.user)) {
-      return <Redirect to={'/'} />
-    }
-    return (
-      this.renderSignupForm()
-    )
-  }
-
-  renderSignupForm() {
     const { errorObject, errorMessage } = this.state;
     return (
-        <Row>
-          <Col xs={8} className={'offset-2'}>
+      <Row>
+        <Col xs={8} className={'offset-2'}>
           <Card style={{ padding: '32px', background: 'lightgrey' }}>
             <form style={{ display: 'flex', flexDirection: 'column' }} noValidate autoComplete="off">
               <CustomInput
@@ -107,19 +98,40 @@ export default class Signup extends Component {
                     errorMessage={errorObject.ageGroupError}
                   />
               }
-              <CustomButton
-                label={"Sign Up"}
-                id={"signup"}
-                onClick={this.handleSubmit}
-                color={"primary"}
-                style={{margin: '24px auto auto', width: '144px' }}
-              />
+              {
+                this.state.showSpinner ? <SpinnerComponent /> :
+                  <CustomButton
+                    label={"Sign Up"}
+                    id={"signup"}
+                    onClick={this.handleSubmit}
+                    color={"primary"}
+                    style={{ margin: '24px auto auto', width: '144px' }}
+                  />
+              }
               <CustomError errorMessage={errorMessage} />
+              {this.renderLoginLink()}
             </form>
-            </Card>
-          </Col>
-        </Row>
+          </Card>
+        </Col>
+      </Row>
     );
+  }
+
+  renderLoginLink() {
+    return <Label style={{ color: 'blue', cursor: 'pointer' }}
+      onClick={this.navigateToLoginPage}>Existing User?</Label>
+  }
+
+  navigateToLoginPage() {
+    this.props.history.push({
+      pathname: '/login'
+    })
+  }
+
+  navigateToHomePage() {
+    this.props.history.push({
+      pathname: '/'
+    })
   }
 
   handleChange(key, value) {
@@ -171,29 +183,22 @@ export default class Signup extends Component {
         }
       }
     }
-    if (!formError) {
+    if (!formError && isNil(this.state.errorMessage)) {
+      state.showSpinner = true;
       this.setState(state, this.signUpUser);
     }
   }
 
   signUpUser = async () => {
-    console.log('state', this.state);
-    const state = this.state;
-    if (isNil(this.state.errorMessage)) {
-      const res = await ApiHelper.postData('/user/signup', this.state.data);
-      if (!isNil(res.data.error)) {
-        this.setState({
-          errorMessage: res.data.error
-        })
-      } else {
-        const user = res.data.user;
-        console.log('successfully signup', res.data.user);
-        Utility.storeToken(user.token);
-        this.setState({
-          user: res.user,
-          errorMessage: null
-        })
-      }
+    const res = await ApiHelper.postData('/user/signup', this.state.data);
+    if (!isNil(res.data.error)) {
+      this.setState({
+        errorMessage: res.data.error,
+        showSpinner: false
+      })
+    } else {
+      Utility.storeToken(res.data.user.token);
+      this.navigateToHomePage()
     }
   }
 }
