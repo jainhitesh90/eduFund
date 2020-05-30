@@ -12,7 +12,7 @@ let userSchema = new Schema({
     gender: {
         type: String
     },
-    ageGroup: {
+    age_group: {
         type: String
     },
     role: {
@@ -23,23 +23,26 @@ let userSchema = new Schema({
     },
     password: {
         type: String
-    },
-    surveysTaken: {
-        type: Array
     }
 });
 
 // encrypt password before save
 userSchema.pre('save', function (next) {
     const user = this;
-    bcrypt.hash(user.password, parseInt(process.env.SALTING_ROUND), function (err, hash) {
-        if (err) {
-            next(err);
-        } else {
-            user.password = hash;
-            next();
-        }
-    });
+    if (user.isNew) {
+        //Perform password hashing here
+        bcrypt.hash(user.password, parseInt(process.env.SALTING_ROUND), function (err, hash) {
+            if (err) {
+                next(err);
+            } else {
+                user.password = hash;
+                next();
+            }
+        });
+    } else {
+        return next();
+    }
+    
 })
 
 module.exports = mongoose.model('User', userSchema);

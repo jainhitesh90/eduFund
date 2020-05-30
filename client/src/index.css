@@ -1,0 +1,309 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.login-signup-container {
+  margin-top: 32px;  
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  padding: 24px !important;
+  margin-bottom: 24px;
+}
+
+.login-signup-logo{
+  width: 120px;
+  height: 48px;
+  margin: 36px auto 12px;
+  display: flex;
+  border-radius: 4px;
+}
+
+.primary-text-color {
+  color: #664986;
+}
+
+.login-signup-header-label {
+  color: #664986;
+  font-size: 24px;
+  margin: 4px auto;
+}
+
+.input-label {
+  color: #62748e;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.input-icon {
+  color: #664986 !important;
+  width: 16px !important
+}
+
+textarea:hover, 
+/* input:hover,  */
+input:active, 
+input:focus,
+select:active, 
+select:focus, 
+textarea:active, 
+textarea:focus, 
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+    outline:0 !important;
+    border-color: #664986 !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+
+.button-primary {
+  color: #fff;
+    background-color: #60467e !important;
+    border: 0 !important;
+    padding: 12px 24px !important;
+    background-image: -webkit-linear-gradient(left bottom,rgba(159,88,150,0) 0,rgba(159,88,150,0.6) 100%) !important;
+}
+
+.button-secondary {
+    color: #fff;
+    border: 0 !important;
+    padding: 12px 24px !important;
+}
+
+.button-secondary {
+  color: #fff;
+    border: 0 !important;
+    padding: 12px 24px !important;
+    background-color: gray;
+}
+
+.divider {
+  height: 0.5px;
+  color: gray;
+}
+
+.label {
+  color: #4a5568;
+}
+
+.custom-link {
+  color: #664986;
+  text-decoration: underline;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.login-signup-footer {
+  width: 100%;
+  text-align: center;
+}
+
+.error-mssage {
+  color: red;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.small-spinner {
+  width: 24px;
+  height: 24px;
+  color: #664986;
+  display: flex !important;
+  margin: 10px auto !important;
+}
+
+.custom-nav-bar {
+  justify-content: space-between !important;
+  padding: 16px 32px !important;
+}
+
+.nav-bar-title {
+  color: white !important;
+  font-size: 16px !important;
+  cursor: pointer;
+}
+
+.nav-bar-logout {
+  color: white !important;
+  font-size: 14px !important;
+  cursor: pointer;
+}
+
+.survey-list-container {
+  background: white;
+  padding: 24px;
+  min-height: 91vh;
+}
+
+.header {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.survey-list-table {
+  background-color: lightgray;
+  padding: 16px;
+}
+
+.survey-item {
+  padding: 6px 0;
+}
+
+.survey-item :hover {
+  background-color: white;
+}
+
+.survey-item-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.survey-item-action {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 0;
+  cursor: pointer;
+  color: #664986;
+}
+
+.survey-item-info {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 0;
+  color: grey;
+}
+
+.survey-list-header-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.add-survey-question {
+    margin-left: 8px;
+    font-size: 16px;
+    color: #664986;
+    cursor: pointer;
+}
+
+.survey-question {
+  font-size: 14px;
+}
+
+.survey-answer-option {
+  font-size: 12px;
+  margin-bottom: 0;
+}
+
+.survey-response-modal-question {
+  font-size: 20px;
+  color: black;
+}
+
+.survey-response-modal-answer {
+  font-size: 18px;
+  color: #847e7e;
+}
+
+.edit-survey-question-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.view-survey-title {
+  color: #62748e;
+  font-size: 14px;
+  margin-bottom: 4px;
+  margin-top: 16px;
+}
+
+.view-survey-data {
+  color: black;
+  font-size: 14px;
+  margin: 0;
+}
+
+.align-center-horizontally {
+  text-align: center;
+}
+
+.co-ordinator-response-user-name {
+  margin : 0;
+  color: red;
+  font-size: 14px;
+}
+
+.co-ordinator-response {
+  margin : 0;
+  color: black;
+  font-size: 12px;
+}
+
+.co-ordinator-rsurvey-no-of-ppl {
+  margin : 0;
+  color: black;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+@media only screen and (max-width: 400px) {
+  .survey-list-container {
+    padding: 4px;
+  }
+
+  .survey-list-header-section {
+    margin-bottom: 8px;
+  }
+
+  .survey-item-title {
+    font-size: 12px;
+  }
+
+  .survey-item-info {
+    font-size: 12px;
+  }
+
+  .survey-item-action {
+    font-size: 10px;
+  }
+
+  .header {
+    font-size: 16px;
+  }
+
+  .button-primary {
+      padding: 6px 12px !important;
+      font-size: 12px !important;
+  }
+
+  .button-secondary {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .custom-nav-bar {
+    padding: 4px 8px !important;
+  }
+ 
+}

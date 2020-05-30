@@ -10,8 +10,10 @@ exports.getAllUsers = async function () {
 
 exports.getUserByQuery = async function (query) {
     try {
+        console.log('login 1a', query);
         return await User.findOne(query)
     } catch (e) {
+        console.log('login 1b error', e);
         throw Error('Error while retrieving user.')
     }
 }

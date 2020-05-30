@@ -5,9 +5,8 @@ var Survey = require('../models/survey');
 exports.addSurvey = async function (req, res) {
     try {
         let survey = new Survey(req.body);
-        var user = await UserService.getUserByQuery({ email: req.authenticatedEmail });
-        console.log('user', user);
-        survey.publisherId = user._id;
+        var user = await UserService.getUserByQuery({ email: req.authenticatedEmail, role: 'co-ordinator' });
+        survey.publisher_id = user._id;
         var result = await SurveyService.saveSurvey(survey);
         res.status(200).json({ 'message': 'Your survey has been addedd successfully', data: result });
     } catch (e) {
@@ -36,8 +35,8 @@ exports.getAllSurveys = async function (req, res) {
 exports.updateSurvey = async function (req, res) {
     try {
         var survey = await SurveyService.getSurvey({ _id: req.params.id })
-        var user = await UserService.getUserByQuery({ _id: survey.publisherId })
-        if (user.email === req.authenticatedEmail) {
+        var user = await UserService.getUserByQuery({ _id: survey.publisher_id })
+        if (user.email === req.authenticatedEmail && user.role === 'co-ordinator') {
             Object.keys(req.body).forEach(function (key) {
                 survey[key] = req.body[key];
             });
@@ -51,11 +50,35 @@ exports.updateSurvey = async function (req, res) {
     }
 }
 
+exports.submitSurvey = async function (req, res) {
+    try {
+        var user = await UserService.getUserByQuery({ email: req.authenticatedEmail });
+        var survey = await SurveyService.getSurvey({ _id: req.body.surveyId })
+        let surveyAlreadyTaken = false;
+        for (let m = 0; m < survey.user_responses.length; m++) {
+            if (survey.user_responses[m].toString() === user._id.toString() ) {
+                surveyAlreadyTaken = false;
+                break;
+            }
+        }
+        if (surveyAlreadyTaken) {
+            return res.status(400).json({ status: 400, errorMessage: 'You have already submitted response to this survey earlier' });
+        } else {
+            userResponeData= {userId: user._id, userName: user.name, response: req.body.response}
+            survey.user_responses.push(userResponeData);
+            SurveyService.saveSurvey(survey);
+            res.status(200).json({ 'message': 'Your response has been submitted successfully', data: survey });
+        }
+    } catch (e) {
+        return res.status(400).json({ status: 400, errorMessage: e.message });
+    }
+}
+
 exports.getCoOrdinatorsSurveys = async function (req, res) {
     try {
-        var user = await UserService.getUserByQuery({ email: req.authenticatedEmail })
-        var surveys = await SurveyService.getSurveyListByQuery({ publisherId: user._id })
-        return res.status(200).json({ status: 200, surveys: surveys, message: "Survey list succesfully retrieved" });
+        var coOrdinatorUser = await UserService.getUserByQuery({ email: req.authenticatedEmail })
+        var allSurveys = await SurveyService.getSurveyListByQuery({ publisher_id: coOrdinatorUser._id })
+        return res.status(200).json({ status: 200, surveys: allSurveys, message: "Survey list succesfully retrieved" });
     } catch (e) {
         return res.status(400).json({ status: 400, errorMessage: e.message });
     }
@@ -64,22 +87,36 @@ exports.getCoOrdinatorsSurveys = async function (req, res) {
 exports.getRespondantsSurveys = async function (req, res) {
     try {
         var user = await UserService.getUserByQuery({ email: req.authenticatedEmail })
-        //TODO refactor this query
-        const query1 = { targetGroup: null }
-        const query2 = { targetGroup: { gender: user.gender } }
-        const query3 = { targetGroup: { gender: 'both' } }
-        const query4 = { targetGroup: { ageGroup: user.ageGroup } }
-        const query5 = { targetGroup: { ageGroup: 'all' } }
-        const query6 = { targetGroup: { gender: user.gender, ageGroup: user.ageGroup } }
-        const query7 = { targetGroup: { gender: 'both', ageGroup: user.ageGroup } }
-        const query8 = { targetGroup: { gender: user.gender, ageGroup: 'all' } }
-        const query9 = { targetGroup: { gender: 'both', ageGroup: 'all' } }
-        const query10 = { isPublished: true }
+        const query1 = { $or: [{ target_group: null }, { target_group: {} }] }
+        const query2 =  { 
+            $and : [
+                { $or : [ 
+                    { "target_group.age_group" : null }, 
+                    { "target_group.age_group" : 'all' }, 
+                    { "target_group.age_group" : user.age_group } ] },
+                { $or : [ 
+                    { "target_group.gender" : null }, 
+                    { "target_group.gender" : 'both' }, 
+                    { "target_group.gender" : user.gender } ] }
+            ]
+         };
+        const query3 = { is_published: true }
         const query = {
-            $and: [{ $or: [query1, query2, query3, query4, query5, query6, query7, query8, query9] }, { $or: [query10] }]
+            $and: [{ $or: [query1, query2] }, query3]
         };
         var surveys = await SurveyService.getSurveyListByQuery(query)
-        return res.status(200).json({ status: 200, surveys: surveys, message: "Survey list succesfully retrieved" });
+        let updatedSurveys = [];
+        for (let m = 0; m < surveys.length; m++) {
+            let survey = surveys[m].toJSON();
+            for (let n = 0; n < survey.user_responses.length; n++) {
+                const surveyResponse = survey.user_responses[n];
+                if (surveyResponse.userId.toString() === user._id.toString()) {
+                    survey.userSurveyResponse = survey.user_responses[n].response;
+                }
+            }
+            updatedSurveys.push(survey);
+        }
+        return res.status(200).json({ status: 200, surveys: updatedSurveys, message: "Survey list succesfully retrieved" });
     } catch (e) {
         return res.status(400).json({ status: 400, errorMessage: e.message });
     }

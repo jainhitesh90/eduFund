@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let surveySchema = new Schema({
-    publisherId: {
+    publisher_id: {
         type: String
     },
-    isPublished: {
+    is_published: {
         type: Boolean, 
         default: false
     },
@@ -18,10 +18,12 @@ let surveySchema = new Schema({
             options: Array
         }
     ],
-    targetGroup: {
-        ageGroup: String,
+    target_group: {
+        age_group: String,
         gender: String
-    }
+    },
+    user_responses: [
+    ]
 });
 
 module.exports = mongoose.model('Survey', surveySchema);
